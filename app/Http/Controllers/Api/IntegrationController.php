@@ -8,7 +8,7 @@ use App\Services\IntegrationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\CaptureResource;
-
+use App\Services\EnvioLeituraService;
 
 class IntegrationController extends Controller {
     public function __construct(
@@ -21,12 +21,16 @@ class IntegrationController extends Controller {
     public function capture(Request $request) {
         //validar dados
         $dto = CreateCaptureDTO::makeFromRequest($request);
-        $this->show($dto->place);
 
 
-        //enviar dados
+
+        //grava dados BD
         $capture = $this->service->new($dto);
 
+        //Envia dados
+        $envioLeituraService = new EnvioLeituraService($dto);
+        $envioLeituraService->setXmlPostString();
+        $retorno = $envioLeituraService->sendRecord();
 
         //retorno
         return (new CaptureResource($capture))

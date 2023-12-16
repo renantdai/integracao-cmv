@@ -8,7 +8,6 @@ use App\Services\IntegrationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\CaptureResource;
-use App\Services\EnvioLeituraService;
 
 class IntegrationController extends Controller {
     public function __construct(
@@ -19,20 +18,28 @@ class IntegrationController extends Controller {
      * Store a newly created resource in storage.
      */
     public function capture(Request $request) {
-        //validar dados
         $dto = CreateCaptureDTO::makeFromRequest($request);
 
+        $validate = $this->service->validateStatus($dto);
+        if (!$validate) {
+            return response()->json([
+                'error' => true,
+                'msg' => 'Placa já se encontrada transmitida para o CMV'
+            ], Response::HTTP_OK);
+        }
 
-
-        //grava dados BD
         $capture = $this->service->new($dto);
+        $dto->id = $capture->id;
 
-        //Envia dados
-        $envioLeituraService = new EnvioLeituraService($dto);
-        $envioLeituraService->setXmlPostString();
-        $retorno = $envioLeituraService->sendRecord();
+        $sent = $this->service->envioLeituraService($dto);
+        $dto->statusSend = $dto::SENT;
+        if (!$sent) {
+            return response()->json([
+                'error' => true,
+                'msg' => 'Não foi possivel transmitir para o CMV, a requisição ficará na fila de transmissão'
+            ], Response::HTTP_ACCEPTED);
+        }
 
-        //retorno
         return (new CaptureResource($capture))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
@@ -41,15 +48,14 @@ class IntegrationController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        if (!$place = $this->service->findOne($id)) {
+    public function show(string $id) {
+        if (!$plate = $this->service->findOne($id)) {
             return response()->json([
                 'error' => 'Not Found'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        return new CaptureResource($place);
+        return new CaptureResource($plate);
     }
 
     /**

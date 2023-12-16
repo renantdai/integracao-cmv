@@ -22,12 +22,35 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
         return (object) $capture->toArray();
     }
 
-    public function findOne(string $place): stdClass|null {
-        $capture = $this->model->where('place', '=', $place)->orderBy('id', 'desc')->first();
+    public function validateStatus(CreateCaptureDTO $dto): bool {
+        $plate = '';
+        if ($dto->idCam) {
+            $plate = $this->model->select('plate')
+                ->where([
+                    ['idCam', '=', $dto->idCam],
+                    ['statusSend', '=', $dto::SENT]
+                ])->orderBy('id', 'desc')->first();
+        } else {
+            $plate = $this->model->select('plate')
+                ->where([
+                    ['idEquipment', '=', $dto->idEquipment],
+                    ['statusSend', '=', $dto::SENT]
+                ])->orderBy('id', 'desc')->first();
+        }
+
+        return ($plate != $dto->plate) ? true : false;
+    }
+
+    public function findOne(string $plate): stdClass|null {
+        $capture = $this->model->where('plate', '=', $plate)->orderBy('id', 'desc')->first();
         if (!$capture) {
             return null;
         }
 
         return (object) $capture->toArray();
+    }
+
+    public function alterStatusCapture(CreateCaptureDTO $dto, $status): bool {
+        return ($this->model->where('id', $dto->id)->update(['statusSend' => $status]));
     }
 }

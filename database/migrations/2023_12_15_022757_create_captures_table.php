@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('idCam');
             $table->string('idEquipment');
-            $table->string('place');
+            $table->string('plate');
+            $table->integer('statusSend');
             $table->text('image')->nullable();
             $table->timestamps();
         });

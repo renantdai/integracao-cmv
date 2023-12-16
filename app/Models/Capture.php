@@ -12,6 +12,7 @@ class Capture extends Model
     protected $fillable = [
         'idCam',
         'idEquipment',
-        'place'
+        'plate',
+        'statusSend'
     ];
 }

@@ -40,6 +40,13 @@ class IntegrationService {
     }
 
     private function validaRetornoEnvioLeituraService($retorno, CreateCaptureDTO $dto): bool {
+        if($retorno == false){
+            //criar log para erros;
+            $this->repository->alterStatusCapture($dto, $dto::ERROR);
+
+            return false;
+        }
+
         $data = (array) $retorno->oneResultMsg->retOneRecepLeitura;
         if ($data['cStat'] != 103) {
             //criar log para erros;

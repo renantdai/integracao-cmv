@@ -14,6 +14,7 @@ class IntegrationService {
     }
 
     public function new(CreateCaptureDTO $dto): stdClass {
+        $this->saveImage($dto);
         return $this->repository->new($dto);
     }
 
@@ -49,5 +50,13 @@ class IntegrationService {
         $this->repository->alterStatusCapture($dto, $dto::SENT);
 
         return true;
+    }
+
+    private function saveImage(CreateCaptureDTO $dto) {
+        $imageData = base64_decode($dto->image);
+        $source = imagecreatefromstring($imageData);
+        $file = 'images/' . $dto->fileName;
+        $imageSave = imagejpeg($source, $file, 100); //validar quando true or false
+        imagedestroy($source);
     }
 }

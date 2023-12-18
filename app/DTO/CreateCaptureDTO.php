@@ -18,7 +18,8 @@ class CreateCaptureDTO {
         public $latitude,
         public $longitude,
         public $image, //Base64
-        public $statusSend,
+        public $fileName,
+        public $statusSend
     ) {
     }
 
@@ -33,6 +34,7 @@ class CreateCaptureDTO {
             $request->latitude,
             $request->longitude,
             $request->image,
+            str_replace(array('.', '-', '/', ':'), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
             self::RECEBIDO
         );
     }

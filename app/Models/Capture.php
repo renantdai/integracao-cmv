@@ -13,6 +13,8 @@ class Capture extends Model
         'idCam',
         'idEquipment',
         'plate',
-        'statusSend'
+        'statusSend',
+        'fileName',
+        'captureDateTime'
     ];
 }

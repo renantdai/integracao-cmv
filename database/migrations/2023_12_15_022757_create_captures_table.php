@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('idEquipment');
             $table->string('plate');
             $table->integer('statusSend');
-            $table->text('image')->nullable();
+            $table->string('fileName')->nullable();
+            $table->timestamp('captureDateTime');
             $table->timestamps();
         });
     }

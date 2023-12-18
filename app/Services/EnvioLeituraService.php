@@ -10,6 +10,7 @@ const SOAP_ACTION_LEITURA = 'http://www.portalfiscal.inf.br/cmv/wsdl/cmvRecepcao
 
 const UF_CODIGO_IBGE = 43;
 const CNPJ_EMPRESA = '90256652000184';
+const UTF = "-03:00";
 
 class EnvioLeituraService {
     public string $xmlPostString;
@@ -24,15 +25,16 @@ class EnvioLeituraService {
     }
 
     public function setXmlPostString(): void {
+        $dateNow =  str_replace(' ', 'T', date('Y-m-d H:i:s'));
         $this->xmlPostString = '<?xml version="1.0" encoding="utf-8"?><soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"><soap12:Body><oneDadosMsg xmlns="http://www.portalfiscal.inf.br/cmv/wsdl/cmvRecepcaoLeitura"><oneRecepLeitura versao="2.00" xmlns="http://www.portalfiscal.inf.br/one">';
         $this->xmlPostString .= '<tpAmb>1</tpAmb>';
         $this->xmlPostString .= '<verAplic>SVRS</verAplic>';
         $this->xmlPostString .= '<tpTransm>N</tpTransm>';
-        $this->xmlPostString .= '<dhTransm>2023-07-14T13:24:29-03:00</dhTransm>';
+        $this->xmlPostString .= '<dhTransm>' . $dateNow . UTF . '</dhTransm>';
 
         $this->xmlPostString .= '<infLeitura>';
         $this->xmlPostString .= '<cUF>' . UF_CODIGO_IBGE . '</cUF>';
-        $this->xmlPostString .= '<dhPass>2023-07-14T13:24:29-03:00</dhPass>';
+        $this->xmlPostString .= '<dhPass>' . $this->dto->captureDateTime . UTF . '</dhPass>';
         $this->xmlPostString .= '<CNPJOper>' . CNPJ_EMPRESA . '</CNPJOper>';
         $this->xmlPostString .= '<cEQP>0000000000010' . $this->dto->idCam . '</cEQP>'; //criar regra para validar 15 digitos
         $this->xmlPostString .= '<placa>' . $this->dto->plate . '</placa>';

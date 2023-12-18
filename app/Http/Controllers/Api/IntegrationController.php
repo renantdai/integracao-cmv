@@ -32,13 +32,14 @@ class IntegrationController extends Controller {
         $dto->id = $capture->id;
 
         $sent = $this->service->envioLeituraService($dto);
-        $dto->statusSend = $dto::SENT;
+
         if (!$sent) {
             return response()->json([
                 'error' => true,
                 'msg' => 'Não foi possivel transmitir para o CMV, a requisição ficará na fila de transmissão'
             ], Response::HTTP_ACCEPTED);
         }
+        $dto->statusSend = $dto::SENT;
 
         return (new CaptureResource($capture))
             ->response()

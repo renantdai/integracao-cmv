@@ -38,7 +38,11 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
                 ])->orderBy('id', 'desc')->first();
         }
 
-        return ($plate != $dto->plate) ? true : false;
+        if (empty($plate)) {
+            return true;
+        }
+
+        return ($plate->plate != $dto->plate) ? true : false;
     }
 
     public function findOne(string $plate): stdClass|null {

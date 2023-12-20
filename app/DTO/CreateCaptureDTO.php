@@ -11,7 +11,7 @@ class CreateCaptureDTO {
     public function __construct(
         public $id,
         public $idRegister,
-        public $captureDateTime, //yyyy-MM-ddTHH:mm:ss
+        public $captureDateTime, //yyyy-MM-dd HH:mm:ss
         public string $plate,
         public string $idEquipment,
         public $idCam,
@@ -27,7 +27,7 @@ class CreateCaptureDTO {
         return new self(
             $request->id,
             $request->idRegister,
-            $request->captureDateTime,
+            str_replace(' ', 'T', $request->captureDateTime),
             $request->plate,
             $request->idEquipment,
             $request->idCam,

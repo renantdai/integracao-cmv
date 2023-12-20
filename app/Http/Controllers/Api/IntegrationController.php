@@ -8,6 +8,7 @@ use App\Services\IntegrationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\CaptureResource;
+use Illuminate\Support\Facades\Log;
 
 class IntegrationController extends Controller {
     public function __construct(
@@ -18,6 +19,7 @@ class IntegrationController extends Controller {
      * Store a newly created resource in storage.
      */
     public function capture(Request $request) {
+        Log::info('Recebido a requisicao', ['id' => $request->id]);
         $dto = CreateCaptureDTO::makeFromRequest($request);
 
         $validate = $this->service->validateStatus($dto);

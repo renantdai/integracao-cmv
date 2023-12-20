@@ -24,7 +24,7 @@ class IntegrationController extends Controller {
         if (!$validate) {
             return response()->json([
                 'error' => true,
-                'msg' => 'Placa já se encontrada transmitida para o CMV'
+                'msg' => 'Placa já se encontrada transmitida para o CMV ou não foi enviado a imagem'
             ], Response::HTTP_OK);
         }
 

@@ -19,6 +19,9 @@ class IntegrationService {
     }
 
     public function validateStatus(CreateCaptureDTO $dto): bool {
+        if (!$dto->image) {
+            return false;
+        }
         if ($dto->statusSend == CreateCaptureDTO::RECEBIDO) {
 
             return $this->repository->validateStatus($dto);

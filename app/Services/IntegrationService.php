@@ -5,6 +5,8 @@ namespace App\Services;
 use App\DTO\CreateCaptureDTO;
 use App\Repositories\Contracts\IntegrationRepositoryInterface;
 use App\Services\EnvioLeituraService;
+use Illuminate\Support\Facades\Log;
+use Exception;
 use stdClass;
 
 class IntegrationService {
@@ -37,13 +39,20 @@ class IntegrationService {
     public function envioLeituraService(CreateCaptureDTO $dto): bool {
         $envioLeituraService = new EnvioLeituraService($dto);
         $envioLeituraService->setXmlPostString();
-        $response = $envioLeituraService->sendRecord();
+        try {
+            $response = $envioLeituraService->sendRecord();
+        } catch (Exception $e) {
+            Log::warning('Erro na requisicao', [
+                'cStat' => $response->oneResultMsg->retOneRecepLeitura->cStat
+            ]);
+        }
+
 
         return $this->validaRetornoEnvioLeituraService($response, $dto);
     }
 
     private function validaRetornoEnvioLeituraService($retorno, CreateCaptureDTO $dto): bool {
-        if($retorno == false){
+        if ($retorno == false) {
             //criar log para erros;
             $this->repository->alterStatusCapture($dto, $dto::ERROR);
 

@@ -24,19 +24,23 @@ class IntegrationController extends Controller {
 
         $validate = $this->service->validateStatus($dto);
         if (!$validate) {
-            Log::info('Estou na capture', ['id' => $request->id]);
             return response()->json([
                 'error' => true,
                 'msg' => 'Placa já se encontrada transmitida para o CMV ou não foi enviado a imagem'
             ], Response::HTTP_OK);
         }
 
+        Log::info('Estou antes de enviar', ['id' => $request->id]);
+
         $capture = $this->service->new($dto);
         $dto->id = $capture->id;
+
+        Log::info('Estou depois de enviar', ['id' => $request->id]);
 
         $sent = $this->service->envioLeituraService($dto);
 
         if (!$sent) {
+            Log::info('Estou no erro', ['id' => $request->id]);
             return response()->json([
                 'error' => true,
                 'msg' => 'Não foi possivel transmitir para o CMV, a requisição ficará na fila de transmissão'

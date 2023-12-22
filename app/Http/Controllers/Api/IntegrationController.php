@@ -24,6 +24,7 @@ class IntegrationController extends Controller {
 
         $validate = $this->service->validateStatus($dto);
         if (!$validate) {
+            Log::info('Estou na capture', ['id' => $request->id]);
             return response()->json([
                 'error' => true,
                 'msg' => 'Placa já se encontrada transmitida para o CMV ou não foi enviado a imagem'

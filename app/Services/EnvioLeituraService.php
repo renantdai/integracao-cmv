@@ -37,6 +37,9 @@ class EnvioLeituraService {
         $this->xmlPostString .= '<dhPass>' . $this->dto->captureDateTime . UTF . '</dhPass>';
         $this->xmlPostString .= '<CNPJOper>' . CNPJ_EMPRESA . '</CNPJOper>';
         $this->xmlPostString .= '<cEQP>0000000000010' . $this->dto->idCam . '</cEQP>'; //criar regra para validar 15 digitos
+       // $this->xmlPostString .= '<latitude>' . $this->dto->latitude . '</latitude>';
+        //$this->xmlPostString .= '<longitude>' . $this->dto->longitude . '</longitude>';
+        //$this->xmlPostString .= '<xEQP>' . $this->dto->nameCam . '</xEQP>';
         $this->xmlPostString .= '<placa>' . $this->dto->plate . '</placa>';
         $this->xmlPostString .= '<tpVeiculo>1</tpVeiculo>';
         $this->xmlPostString .= '<foto>' . $this->dto->image . '</foto>';

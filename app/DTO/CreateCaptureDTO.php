@@ -15,6 +15,7 @@ class CreateCaptureDTO {
         public string $plate,
         public string $idEquipment,
         public $idCam,
+        public $nameCam,
         public $latitude,
         public $longitude,
         public $image, //Base64
@@ -31,11 +32,21 @@ class CreateCaptureDTO {
             $request->plate,
             $request->idEquipment,
             $request->idCam,
+            self::getNameCam($request->idCam),
             $request->latitude,
             $request->longitude,
             $request->image,
             str_replace(array('.', '-', '/', ':'), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
             self::RECEBIDO
         );
+    }
+
+    public static function getNameCam($idCam) : string {
+        $cams = [
+            '01' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da direita',
+            '02' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da esquerda'
+        ];
+
+        return $cams[$idCam];
     }
 }

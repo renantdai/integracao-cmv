@@ -44,6 +44,7 @@ class IntegrationService {
         try {
             Log::info('entrei no try', ['id' => '1']);
             $response = $envioLeituraService->sendRecord();
+            Log::info('retorno', ['id' => $response]);
         } catch (Exception $e) {
             Log::info('entrei no cat', ['id' => $e->getMessage()]);
             Log::info('Erro na requisicao', [

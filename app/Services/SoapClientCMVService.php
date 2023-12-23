@@ -39,9 +39,9 @@ class SoapClientCMVService {
         $url = $this->wsdl;
         $xml_post_string = $this->xmlPostString;
         $header = $this->getHeader();
-        $caFile = getcwd() . "\\certificado\imbe.pem"; //
-        $CA = getcwd() . "\\certificado\CACert.cer"; //
-        $key = getcwd() . "\\certificado\key.key"; //
+        $caFile = getcwd() . "/certificado/imbe.pem"; // Windows \\   |  linux /
+        #$CA = getcwd() . "\\certificado\CACert.cer";
+        #$key = getcwd() . "\\certificado\key.key";
 
         // PHP cURL  for https connection with auth
         $ch = curl_init();

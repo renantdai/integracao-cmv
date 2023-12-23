@@ -37,18 +37,16 @@ class IntegrationService {
     }
 
     public function envioLeituraService(CreateCaptureDTO $dto): bool {
-        Log::info('Cheguei no envio', ['id' => '1']);
         $envioLeituraService = new EnvioLeituraService($dto);
-        Log::info('Passei do objeto', ['id' => '1']);
         $envioLeituraService->setXmlPostString();
+
         try {
             Log::info('entrei no try', ['id' => '1']);
             $response = $envioLeituraService->sendRecord();
-            Log::info('retorno', ['id' => $response]);
         } catch (Exception $e) {
-            Log::info('entrei no cat', ['id' => $e->getMessage()]);
+            Log::info('entrei no catch', ['Message' => $e->getMessage()]);
             Log::info('Erro na requisicao', [
-                'cStat' => $response->oneResultMsg->retOneRecepLeitura->cStat
+                'cStat' => isset($response->oneResultMsg->retOneRecepLeitura->cStat) ?? 0
             ]);
         }
 

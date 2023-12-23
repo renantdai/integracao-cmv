@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use Illuminate\Support\Facades\Log;
 
 class SoapClientCMVService {
 
@@ -77,12 +78,12 @@ class SoapClientCMVService {
                 curl_errno($ch),
                 htmlspecialchars(curl_error($ch))
             );
-        }
+        } */
 
         rewind($streamVerboseHandle);
         $verboseLog = stream_get_contents($streamVerboseHandle);
 
-        return  "cUrl verbose information:\n" . "<pre>" . htmlspecialchars($verboseLog) . "</pre>\n"; */
+        #return  "cUrl verbose information:\n" . "<pre>" . htmlspecialchars($verboseLog) . "</pre>\n";
 
         ## para logar
 
@@ -94,6 +95,10 @@ class SoapClientCMVService {
 
         // convertingc to XML
         $parser = simplexml_load_string($response2);
+
+        if ($parser == false) {
+            Log::info('Erro SOAP', ['curl' =>  htmlspecialchars($verboseLog)]);
+        }
 
         return $parser;
     }

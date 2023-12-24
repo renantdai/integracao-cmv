@@ -36,7 +36,7 @@ class CreateCaptureDTO {
             $request->latitude,
             $request->longitude,
             $request->image,
-            str_replace(array('.', '-', '/', ':'), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
+            str_replace(array('.', '-', '/', ':',' '), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
             self::RECEBIDO
         );
     }

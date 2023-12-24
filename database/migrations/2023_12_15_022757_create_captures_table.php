@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('plate');
             $table->integer('statusSend');
             $table->string('fileName')->nullable();
-            $table->timestamp('captureDateTime');
+            $table->dateTime('captureDateTime');
             $table->timestamps();
         });
     }

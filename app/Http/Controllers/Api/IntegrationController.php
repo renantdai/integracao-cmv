@@ -19,8 +19,8 @@ class IntegrationController extends Controller {
      * Store a newly created resource in storage.
      */
     public function capture(Request $request) {
-        Log::info('Recebido a requisicao', ['id' => $request->idRegister]);
-        Log::info('Requisição', [$request->all()]);
+        Log::info('Recebido a requisicao', ['id' => $request->idRegister, 'idCam' =>$request->idCam]);
+        //Log::info('Requisição', [$request->all()]);
 
         $dto = CreateCaptureDTO::makeFromRequest($request);
 

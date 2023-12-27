@@ -44,7 +44,7 @@ class CreateCaptureDTO {
     public static function getNameCam($idCam) : string {
         $cams = [
             '01' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da direita',
-            '02' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da esquerda'
+            '13' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da esquerda'
         ];
 
         return $cams[$idCam];

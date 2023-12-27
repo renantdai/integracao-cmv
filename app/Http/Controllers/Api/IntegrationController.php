@@ -20,6 +20,8 @@ class IntegrationController extends Controller {
      */
     public function capture(Request $request) {
         Log::info('Recebido a requisicao', ['id' => $request->idRegister]);
+        Log::info('Requisição', [$resquest->all()]);
+
         $dto = CreateCaptureDTO::makeFromRequest($request);
 
         $validate = $this->service->validateStatus($dto);

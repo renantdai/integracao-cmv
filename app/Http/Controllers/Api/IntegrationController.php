@@ -8,6 +8,7 @@ use App\Services\IntegrationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\CaptureResource;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class IntegrationController extends Controller {
@@ -22,12 +23,21 @@ class IntegrationController extends Controller {
         Log::info('Recebido a requisicao', ['id' => $request->idRegister, 'idCam' =>$request->idCam]);
         //Log::info('Requisição', [$request->all()]);
 
-        $dto = CreateCaptureDTO::makeFromRequest($request);
+        try{
+            $dto = CreateCaptureDTO::makeFromRequest($request);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'error' => 'possui erro',
+                'msg' => 'Houve um erro na criação do DTO'
+            ], Response::HTTP_OK);
+        }
+
 
         $validate = $this->service->validateStatus($dto);
         if (!$validate) {
             return response()->json([
-                'error' => true,
+                'error' => 'possui erro',
                 'msg' => 'Placa já se encontrada transmitida para o CMV ou não foi enviado a imagem'
             ], Response::HTTP_OK);
         }
@@ -39,15 +49,15 @@ class IntegrationController extends Controller {
 
         if (!$sent) {
             return response()->json([
-                'error' => true,
+                'error' => 'possui erro',
                 'msg' => 'Não foi possivel transmitir para o CMV, a requisição ficará na fila de transmissão'
-            ], Response::HTTP_ACCEPTED);
+            ], Response::HTTP_OK);
         }
         $dto->statusSend = $dto::SENT;
 
         return (new CaptureResource($capture))
             ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+            ->setStatusCode(Response::HTTP_OK);
     }
 
     /**

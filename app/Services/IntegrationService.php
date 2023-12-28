@@ -41,7 +41,7 @@ class IntegrationService {
         $envioLeituraService->setXmlPostString();
 
         try {
-            Log::info('entrei no try', ['id' => '1']);
+            Log::info('entrei no try', ['idCam' => $dto->idCam]);
             $response = $envioLeituraService->sendRecord();
         } catch (Exception $e) {
             Log::info('entrei no catch', ['Message' => $e->getMessage()]);

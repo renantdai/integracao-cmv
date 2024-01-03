@@ -27,6 +27,7 @@ class IntegrationController extends Controller {
             $dto = CreateCaptureDTO::makeFromRequest($request);
         }
         catch(Exception $e){
+            return ;
             return response()->json([
                 'error' => 'possui erro',
                 'msg' => 'Houve um erro na criação do DTO'
@@ -36,6 +37,7 @@ class IntegrationController extends Controller {
 
         $validate = $this->service->validateStatus($dto);
         if (!$validate) {
+            return ;
             return response()->json([
                 'error' => 'possui erro',
                 'msg' => 'Placa já se encontrada transmitida para o CMV ou não foi enviado a imagem'
@@ -48,6 +50,7 @@ class IntegrationController extends Controller {
         $sent = $this->service->envioLeituraService($dto);
 
         if (!$sent) {
+            return ;
             return response()->json([
                 'error' => 'possui erro',
                 'msg' => 'Não foi possivel transmitir para o CMV, a requisição ficará na fila de transmissão'
@@ -55,6 +58,7 @@ class IntegrationController extends Controller {
         }
         $dto->statusSend = $dto::SENT;
 
+        return ;
         return (new CaptureResource($capture))
             ->response()
             ->setStatusCode(Response::HTTP_OK);

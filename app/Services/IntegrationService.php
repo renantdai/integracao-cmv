@@ -16,7 +16,7 @@ class IntegrationService {
     }
 
     public function new(CreateCaptureDTO $dto): stdClass {
-        $this->saveImage($dto);
+        //$this->saveImage($dto);
         return $this->repository->new($dto);
     }
 

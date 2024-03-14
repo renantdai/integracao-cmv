@@ -25,7 +25,6 @@ class IntegrationService {
             return false;
         }
         if ($dto->statusSend == CreateCaptureDTO::RECEBIDO) {
-
             return $this->repository->validateStatus($dto);
         }
 
@@ -41,15 +40,12 @@ class IntegrationService {
         $envioLeituraService->setXmlPostString();
 
         try {
-            Log::info('entrei no try', ['idCam' => $dto->idCam]);
             $response = $envioLeituraService->sendRecord();
         } catch (Exception $e) {
-            Log::info('entrei no catch', ['Message' => $e->getMessage()]);
             Log::info('Erro na requisicao', [
                 'cStat' => isset($response->oneResultMsg->retOneRecepLeitura->cStat) ?? 0
             ]);
         }
-
 
         return $this->validaRetornoEnvioLeituraService($response, $dto);
     }
@@ -63,7 +59,7 @@ class IntegrationService {
         }
 
         $data = (array) $retorno->oneResultMsg->retOneRecepLeitura;
-/*         if ($data['cStat'] != 103) { #Testar retorno
+        /*         if ($data['cStat'] != 103) { #Testar retorno
             //criar log para erros;
             $this->repository->alterStatusCapture($dto, $dto::ERROR);
 

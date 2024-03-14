@@ -53,8 +53,8 @@ class SoapClientCMVService {
         curl_setopt($ch, CURLOPT_SSLCERT, $caFile);
         //curl_setopt($ch, CURLOPT_SSLKEY, $key);
         //curl_setopt($ch, CURLOPT_CAINFO,  $caFile);
-        //curl_setopt($ch, CURLOPT_SSLCERTPASSWD, '123456');
-        //  curl_setopt($ch, CURLOPT_KEYPASSWD, '123456');
+        //curl_setopt($ch, CURLOPT_SSLCERTPASSWD, 'password');
+        //curl_setopt($ch, CURLOPT_KEYPASSWD, 'password');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
         curl_setopt($ch, CURLOPT_TIMEOUT, 180);

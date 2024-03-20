@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\IntegrationController;
+use App\Http\Controllers\Api\RepositoryFtpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,9 @@ use App\Http\Controllers\Api\IntegrationController;
 
 Route::namespace('API')->name('api.')->group(function () {
     Route::post('/capture', [IntegrationController::class, 'capture']);
+    Route::get('/ftp', [RepositoryFtpController::class, 'show']);
+    Route::get('/ftp/verificar', [RepositoryFtpController::class, 'verificaRepositorio']);
+    Route::get('/sftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioSftp']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

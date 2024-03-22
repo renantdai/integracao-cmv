@@ -16,12 +16,22 @@ use Illuminate\Support\Facades\App;
 
 class RepositoryFtpService {
 
-    public IntegrationRepositoryInterface $repository;
+    const REGISTERED_CAMERAS = [
+        '192.168.26.11' => [
+            'idEquipment' => '211',
+            'idCam' => '11'
+        ],
+        '192.168.26.111' => [
+            'idEquipment' => '211',
+            'idCam' => '111'
+        ]
+    ];
 
     public function __construct(
+        protected IntegrationRepositoryInterface $repository,
         protected FtpClient $ftp,
         public $sftp = null,
-        public string $diretory = '/smsalbatroz',
+        public string $diretory = '',
     ) {
     }
 
@@ -51,12 +61,18 @@ class RepositoryFtpService {
 
     public function verificaRepositorio() {
         $this->getInitConectionFtp();
-        //obtem o ultimo item transmitido
-        $lastItem = '/smsalbatroz//smsalbatroz/230809100513.pdf';
-        $list = $this->ftp->nList('.', 'rsort');
-        $rawlist = $this->ftp->rawlist();
 
-        if (!$this->validatePlate($lastItem, $$list[0])) {
+        $lastItemSent = $this->repository->lastSendCam(self::REGISTERED_CAMERAS[$this->diretory]['idCam']);
+        $list = $this->ftp->nList('.', 'rsort');
+        #$rawlist = $this->ftp->rawlist();
+
+        if (!$this->validatePlate($lastItemSent, $$list[0])) {
+            return false;
+        }
+
+        $return = $this->sendCapture($list[0]);
+
+        if (!$return) {
             return false;
         }
 
@@ -67,8 +83,12 @@ class RepositoryFtpService {
 
     public function verificaRepositorioSftp() {
         $this->getInitConectionSftp();
-        //obtem o ultimo item transmitido
-        $lastItemSent = 'ISP2640';
+
+        if (!$this->validateCam()) {
+            return false;
+        }
+
+        $lastItemSent = $this->repository->lastSendCam(self::REGISTERED_CAMERAS[$this->diretory]['idCam']);
 
         $this->sftp->setListOrder('filename', SORT_ASC, true);
 
@@ -116,13 +136,12 @@ class RepositoryFtpService {
         return $integrationController->capture($request);
     }
 
-    public function prepareDataBeforeSend(string $path, $idRegister = '0', $idEquipament = '0', $idCam = '01') {
+    public function prepareDataBeforeSend(string $path, $idRegister = '0') {
         $image = '';
         $pathArray = explode('_', $path);
 
         if (!is_null($this->sftp)) {
             $image = $this->sftp->get($path);
-
         } else {
             $image = $this->ftp->get($path);
         }
@@ -131,8 +150,8 @@ class RepositoryFtpService {
             "idRegister" => $idRegister,
             "captureDateTime" => Carbon::make($pathArray[0] . ' ' . $pathArray[1])->format('Y-m-d h:m:i'),
             "plate" => substr($pathArray[2], 0, 7),
-            "idEquipment" => $idEquipament,
-            "idCam" => $idCam,
+            "idEquipment" => self::REGISTERED_CAMERAS[$this->diretory]['idEquipament'],
+            "idCam" => self::REGISTERED_CAMERAS[$this->diretory]['idCam'],
             "image" => base64_encode($image)
         ];
     }
@@ -164,5 +183,9 @@ class RepositoryFtpService {
         $plate = explode('.', $path[2]);
 
         return $plate[0];
+    }
+
+    private function validateCam() {
+        return in_array($this->diretory, self::REGISTERED_CAMERAS);
     }
 }

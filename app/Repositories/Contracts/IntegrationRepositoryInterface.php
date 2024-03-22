@@ -12,4 +12,5 @@ interface IntegrationRepositoryInterface {
     public function validateStatus(CreateCaptureDTO $dto): bool;
     public function findOne(string $id): stdClass|null;
     public function alterStatusCapture(CreateCaptureDTO $dto, $status);
+    public function lastSendCam(string $idCam);
 }

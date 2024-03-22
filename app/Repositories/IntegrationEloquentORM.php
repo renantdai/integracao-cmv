@@ -57,4 +57,18 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
     public function alterStatusCapture(CreateCaptureDTO $dto, $status): bool {
         return ($this->model->where('id', $dto->id)->update(['statusSend' => $status]));
     }
+
+    public function lastSendCam(string $idCam): string {
+        $plate = $this->model->select('plate')
+            ->where([
+                ['idCam', '=', $idCam],
+                ['statusSend', '=', CreateCaptureDTO::SENT]
+            ])->orderBy('id', 'desc')->first();
+
+        if (empty($plate)) {
+            return '';
+        }
+
+        return $plate->plate;
+    }
 }

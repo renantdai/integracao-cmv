@@ -17,6 +17,12 @@ class RepositoryFtpController extends Controller
         return $this->service->verificaRepositorio();
     }
 
+    public function verificaRepositorioFtp(Request $request){
+        $this->service->diretory = $request->directory;
+
+        return $this->service->verificaRepositorio();
+    }
+
     public function verificaRepositorioSftp(Request $request){
         $this->service->diretory = $request->directory;
 

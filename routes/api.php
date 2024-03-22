@@ -20,6 +20,7 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::post('/capture', [IntegrationController::class, 'capture']);
     Route::get('/ftp', [RepositoryFtpController::class, 'show']);
     Route::get('/ftp/verificar', [RepositoryFtpController::class, 'verificaRepositorio']);
+    Route::get('/ftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioFtp']);
     Route::get('/sftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioSftp']);
 });
 

@@ -36,7 +36,7 @@ class CreateCaptureDTO {
             $request->latitude,
             $request->longitude,
             $request->image,
-            str_replace(array('.', '-', '/', ':',' '), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
+            str_replace(array('.', '-', '/', ':', ' '), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
             self::RECEBIDO
         );
     }
@@ -47,16 +47,31 @@ class CreateCaptureDTO {
      * @param string $idCam
      * @return string
      */
-    public static function getNameCam($idCam) : string {
+    public static function getNameCam($idCam): string {
         $cams = [
             '01' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da direita',
             '13' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da esquerda',
             '14' => 'Saida do municipio de Imbe utilizando a via beira mar no bairro imara',
             '15' => 'Entrada do municipio de Imbe utilizando a via beira mar no bairro imara',
             '16' => 'Saida do municipio de Imbe utilizando a RS-786 no bairro imara',
-            '17' => 'Entrada do municipio de Imbe utilizando a RS-786 no bairro imara'
+            '17' => 'Entrada do municipio de Imbe utilizando a RS-786 no bairro imara',
+            '11' => 'teste-Guaiba-11',
+            '111' => 'teste-Guaiba-111',
         ];
 
         return $cams[$idCam];
+    }
+
+    public static function registered_cameras(): array {
+        return [
+            '192.168.26.11' => [
+                'idEquipment' => '211',
+                'idCam' => '11'
+            ],
+            'smsalbatroz' => [
+                'idEquipment' => '211',
+                'idCam' => '111'
+            ]
+        ];
     }
 }

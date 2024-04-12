@@ -12,6 +12,7 @@ use phpseclib3\Net\SFTP;
 use stdClass;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 
@@ -191,5 +192,51 @@ class RepositoryFtpService {
 
     private function validateCam() {
         return in_array($this->diretory, $this->registered_cameras);
+    }
+
+    static public function testConnectionFtp($host, $user, $password, $port = 21) {
+        $ftp = new FtpClient();
+
+        for ($x = 0; $x < 3; $x++) {
+            try {
+                $ftp->connect($host, false, $port, 10);
+            } catch (Exception $e) {
+                continue;
+            }
+        }
+        if (empty($ftp)) {
+            return ['error' => true];
+        }
+        $ftp->login($user, $password);
+        if (!$ftp->isEmpty('.')) {
+            return ['msg' => 'sucesso'];
+        }
+
+        return ['error' => true, 'msg' => 'validar erro'];
+    }
+
+    static public function testConnectionFtpPHP($host, $user, $password) {
+        // Estabelecer conexão com o servidor FTP
+        $conn_id = ftp_connect($host);
+
+        // Verificar se a conexão foi bem sucedida
+        if (!$conn_id) {
+            die("Falha na conexão com o servidor FTP: " . ftp_errormsg($conn_id));
+        }
+
+        // Efetuar login no servidor FTP
+        $login_result = ftp_login($conn_id, $user, $password);
+
+        // Verificar se o login foi bem sucedido
+        if (!$login_result) {
+            die("Falha no login do FTP: " . ftp_errormsg($conn_id));
+        }
+
+        // Exemplo de listagem de arquivos no diretório raiz
+        $files = ftp_nlist($conn_id, ".");
+        print_r($files);
+
+        // Fechar a conexão com o servidor FTP
+        ftp_close($conn_id);
     }
 }

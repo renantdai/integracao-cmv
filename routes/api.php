@@ -18,6 +18,8 @@ use App\Http\Controllers\Api\RepositoryFtpController;
 
 Route::namespace('API')->name('api.')->group(function () {
     Route::post('/capture', [IntegrationController::class, 'capture']);
+    Route::post('/ftp/test', [RepositoryFtpController::class, 'testarConexao']);
+    Route::post('/ftp/php/test', [RepositoryFtpController::class, 'testarConexaoPHP']);
     Route::get('/ftp', [RepositoryFtpController::class, 'show']);
     Route::get('/ftp/verificar', [RepositoryFtpController::class, 'verificaRepositorio']);
     Route::get('/ftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioFtp']);

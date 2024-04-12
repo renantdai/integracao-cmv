@@ -6,24 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Services\RepositoryFtpService;
 use Illuminate\Http\Request;
 
-class RepositoryFtpController extends Controller
-{
+class RepositoryFtpController extends Controller {
     public function __construct(
         protected RepositoryFtpService $service,
     ) {
     }
 
-    public function verificaRepositorio(){
+    public function testarConexao(Request $request) {
+        return $this->service->testConnectionFtp($request->host, $request->user, $request->password, $request->port);
+    }
+
+    public function testarConexaoPHP(Request $request) {
+        return $this->service->testConnectionFtpPHP($request->host, $request->user, $request->password);
+    }
+
+    public function verificaRepositorio() {
         return $this->service->verificaRepositorio();
     }
 
-    public function verificaRepositorioFtp(Request $request){
+    public function verificaRepositorioFtp(Request $request) {
         $this->service->diretory = $request->directory;
 
         return $this->service->verificaRepositorio();
     }
 
-    public function verificaRepositorioSftp(Request $request){
+    public function verificaRepositorioSftp(Request $request) {
         $this->service->diretory = $request->directory;
 
         return $this->service->verificaRepositorioSftp();
@@ -31,8 +38,7 @@ class RepositoryFtpController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
-    {
+    public function show() {
         return $this->service->show();
     }
 }

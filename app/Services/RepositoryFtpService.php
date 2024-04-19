@@ -33,12 +33,20 @@ class RepositoryFtpService {
         $this->ftp->connect(env('HOST_FTP'), false, env('PORT_FTP'), 10);
         $this->ftp->login(env('LOGIN_FTP'), env('PASSWORD_FTP'));
         $this->ftp->chdir($this->diretory);
+        $this->ftp->pasv(true);
     }
 
     public function getInitConectionSftp() {
         $this->sftp = new SFTP(env('HOST_SFTP'), env('PORT_SFTP'));
         $this->sftp->login(env('LOGIN_SFTP'), env('PASSWORD_SFTP'));
         $this->sftp->chdir($this->diretory);
+    }
+
+    public function registerDirectory(string $diretory): void {
+        if (!isset($this->registered_cameras[$diretory]['idCam'])) {
+            throw new Exception('Diretorio não registrado no sistema');
+        }
+        $this->diretory = $diretory;
     }
 
     public function show() {
@@ -59,7 +67,15 @@ class RepositoryFtpService {
         $lastItemSent = $this->repository->lastSendCam($this->registered_cameras[$this->diretory]['idCam']);
         $list = $this->ftp->nList('.', 'rsort');
         #$rawlist = $this->ftp->rawlist();
-        $plate = $this->getPlateFromPath($list[0]);
+        $plate = '';
+        foreach ($list as $l) {
+            $plate = $this->getPlateFromPath($l);
+            if ($plate == '0000000') {
+                $this->ftp->delete($l);
+                continue;
+            }
+            break;
+        }
 
         if (!$this->validatePlate($lastItemSent, $plate)) {
             return false;

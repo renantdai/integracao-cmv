@@ -39,7 +39,7 @@ class SoapClientCMVService {
         $url = $this->wsdl;
         $xml_post_string = $this->xmlPostString;
         $header = $this->getHeader();
-        $caFile = getcwd() . "/certificado/imbe.pem"; // Windows \\   |  linux /
+        $caFile = getcwd() . "/certificado/certificado.pem"; // Windows \\   |  linux /
         #$CA = getcwd() . "\\certificado\CACert.cer";
         #$key = getcwd() . "\\certificado\key.key";
 

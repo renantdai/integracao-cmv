@@ -28,8 +28,6 @@ Route::namespace('API')->name('api.')->group(function () {
 
     Route::post('/cam', [CamController::class, 'store']);
     Route::post('/cam/send', [CamController::class, 'send']);
-
-    //Route::apiResource('/cam', CamController::class);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

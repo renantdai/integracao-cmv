@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\IntegrationController;
 use App\Http\Controllers\Api\RepositoryFtpController;
+use App\Http\Controllers\Api\CamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,11 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::get('/ftp/verificar', [RepositoryFtpController::class, 'verificaRepositorio']);
     Route::get('/ftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioFtp']);
     Route::get('/sftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioSftp']);
+
+    Route::post('/cam', [CamController::class, 'store']);
+    Route::post('/cam/send', [CamController::class, 'send']);
+
+    //Route::apiResource('/cam', CamController::class);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

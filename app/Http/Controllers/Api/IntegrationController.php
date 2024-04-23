@@ -27,7 +27,8 @@ class IntegrationController extends Controller {
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'possui erro',
-                'msg' => 'Houve um erro na criação do DTO'
+                'msg' => 'Houve um erro na criação do DTO',
+                'warning' => $e->getMessage()
             ], Response::HTTP_OK);
         }
 

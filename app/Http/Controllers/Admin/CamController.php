@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DTO\CreateCamDTO;
-use App\DTO\Supports\CreateSupportDTO;
-use App\DTO\Supports\UpdateSupportDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCamRequest;
-use App\Http\Requests\StoreUpdateSupport;
-use App\Models\Cam;
 use App\Services\CamService;
-use App\Services\SupportService;
 use Illuminate\Http\Request;
 
 class CamController extends Controller {
@@ -54,5 +49,19 @@ class CamController extends Controller {
             return back();
         }
         return view('admin/cams/edit', compact('cam'));
+    }
+
+    public function send(string $id) {
+        $retorno = $this->service->send($id);
+
+        if ($retorno['error']) {
+            return redirect()
+                ->route('cams.index')
+                ->with('message', $retorno['msg']);
+        }
+
+        return redirect()
+            ->route('cams.index')
+            ->with('message', 'Enviado com Sucesso!');
     }
 }

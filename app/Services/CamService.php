@@ -95,7 +95,7 @@ class CamService {
     public function send(string $id) {
         $cam = Cam::find($id);
         if (!$cam) {
-            return 'não existe esse id';
+            return ['error' => true, 'msg' => 'nao existe esse id'];
         }
 
         $validateDto = new StoreCamRequest($cam->toArray());

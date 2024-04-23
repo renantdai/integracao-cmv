@@ -25,3 +25,4 @@ Route::get('/cams/create', [CamController::class, 'create'])->name('cams.create'
 Route::get('/cams/{id}', [CamController::class, 'show'])->name('cams.show');
 Route::post('/cams', [CamController::class, 'store'])->name('cams.store');
 Route::get('/cams', [CamController::class, 'index'])->name('cams.index');
+Route::get('/cams/{id}/send', [CamController::class, 'send'])->name('cams.send');

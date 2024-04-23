@@ -14,6 +14,14 @@ class RegisteredCamerasHelper {
                 'idEquipment' => '211',
                 'idCam' => '26111'
             ],
+            '192_168_26_12' => [
+                'idEquipment' => '212',
+                'idCam' => '26012'
+            ],
+            '192_168_26_112' => [
+                'idEquipment' => '212',
+                'idCam' => '26112'
+            ],
             'smsalbatroz' => [
                 'idEquipment' => '211',
                 'idCam' => '111'

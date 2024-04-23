@@ -181,7 +181,7 @@ class RepositoryFtpService {
         $this->verifyDiretory();
         $pathName = explode('/', $path);
 
-        $this->ftp->rename(end($pathName), "enviado\\" . end($pathName));
+        $this->ftp->rename(end($pathName), "enviado/" . end($pathName)); // Linux usar Contra Barra - Windows usar duas barras invertida
     }
 
     public function verifyDiretory(string $path = 'enviado'): void {

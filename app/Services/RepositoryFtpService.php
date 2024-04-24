@@ -9,12 +9,10 @@ use App\Repositories\Contracts\IntegrationRepositoryInterface;
 use App\Repositories\IntegrationEloquentORM;
 use FtpClient\FtpClient;
 use phpseclib3\Net\SFTP;
-use stdClass;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 class RepositoryFtpService {
 
@@ -30,10 +28,16 @@ class RepositoryFtpService {
     }
 
     public function getInitConectionFtp() {
-        $this->ftp->connect(env('HOST_FTP'), false, env('PORT_FTP'), 10);
-        $this->ftp->login(env('LOGIN_FTP'), env('PASSWORD_FTP'));
-        $this->ftp->chdir($this->diretory);
-        $this->ftp->pasv(true);
+        try {
+            $this->ftp->connect(env('HOST_FTP'), false, env('PORT_FTP'), 10);
+            $this->ftp->login(env('LOGIN_FTP'), env('PASSWORD_FTP'));
+            $this->ftp->chdir($this->diretory);
+            $this->ftp->pasv(true);
+
+            return ['error' => false];
+        } catch (Exception $e) {
+            return ['error' => true, 'msg' => 'Erro ao iniciar a conexao. ' . $e->getMessage()];
+        }
     }
 
     public function getInitConectionSftp() {
@@ -62,34 +66,55 @@ class RepositoryFtpService {
     }
 
     public function verificaRepositorio() {
-        $this->getInitConectionFtp();
+        $testConnection = $this->getInitConectionFtp();
+        if ($testConnection['error']) {
+            return $testConnection;
+        }
 
         $lastItemSent = $this->repository->lastSendCam($this->registered_cameras[$this->diretory]['idCam']);
+
         $list = $this->ftp->nList('.', 'rsort');
+        if (empty($list)) {
+            return false;
+        }
+        $arrayItens = array_chunk($list, 10);
         #$rawlist = $this->ftp->rawlist();
         $plate = '';
-        foreach ($list as $l) {
-            $plate = $this->getPlateFromPath($l);
-            if ($plate == '0000000') {
-                $this->ftp->delete($l);
-                continue;
+        foreach ($arrayItens[0] as $l) {
+            try {
+                $plate = $this->getPlateFromPath($l);
+                if ($plate == '0000000') {
+                    $this->ftp->delete($l);
+                    continue;
+                }
+                $sendStatus = $this->prepareSendCapture($l, $plate, $lastItemSent);
+                if ($sendStatus['error']) {
+                    continue; //criar log e tratar
+                }
+                $lastItemSent = $plate;
+            } catch (Exception $e) {
+                Log::info('Erro no fluxo de envio', [$e->getMessage()]);
             }
-            break;
         }
+    }
 
+    public function prepareSendCapture($directoryCapture, $plate, $lastItemSent) {
         if (!$this->validatePlate($lastItemSent, $plate)) {
-            return false;
+            return ['error' => true, 'msg' => 'Não foi possivel validar a placa'];
         }
 
-        $return = $this->sendCapture($list[0]);
+        $return = $this->sendCapture($directoryCapture);
+        $data = $return->getData();
 
-        if (!$return) {
-            return false;
+        if (isset($data->error)) {
+            if ($data->error) {
+                return (array) $data;
+            }
         }
 
-        $this->saveImage($list[0]);
+        $this->saveImage($directoryCapture);
 
-        return $return;
+        return (array) $data;
     }
 
     public function verificaRepositorioSftp() {

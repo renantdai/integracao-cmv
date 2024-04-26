@@ -181,8 +181,9 @@ class RepositoryFtpService {
         } else {
             //$this->ftp->get('.', $path, FTP_IMAGE);
             // $image = $this->ftp->get('tmp-images/teste2.jpg', $path, FTP_IMAGE);
-            $handle = fopen('php://temp', 'r+');
-            $nameTmp = time();
+            //$handle = fopen('images/', 'r+');
+            $handle = 'images/'; // windows usar contrabarra dupla | linux barra simples
+            $nameTmp = $pathArray[1]. '_'. $pathArray[2];
             $this->ftp->get($handle . $nameTmp, $path, FTP_IMAGE);
             $image = file_get_contents($handle . $nameTmp);
             $pathArray[0] = substr($pathArray[0], 2);

@@ -54,8 +54,11 @@ class CamService {
             $response = $envioLeituraService->sendRecord();
         } catch (Exception $e) {
             Log::info('Erro na requisicao', [
-                'cStat' => isset($response->oneResultMsg->retOneRecepLeitura->cStat) ?? 0
+                'cStat' => isset($response->oneResultMsg->retOneRecepLeitura->cStat) ?? 0,
+                'msgError' => $e->getMessage()
             ]);
+
+            return $this->validaRetornoEnvioLeituraService(false, $dto);
         }
 
         return $this->validaRetornoEnvioLeituraService($response, $dto);

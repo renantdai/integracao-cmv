@@ -16,7 +16,7 @@ class IntegrationService {
     }
 
     public function new(CreateCaptureDTO $dto): stdClass {
-        //$this->saveImage($dto);
+        $this->saveImage($dto);
         return $this->repository->new($dto);
     }
 
@@ -73,11 +73,13 @@ class IntegrationService {
         return true;
     }
 
-    private function saveImage(CreateCaptureDTO $dto) {
-        $imageData = base64_decode($dto->image);
-        $source = imagecreatefromstring($imageData);
-        $file = 'images/' . $dto->fileName;
-        $imageSave = imagejpeg($source, $file, 100); //validar quando true or false
-        imagedestroy($source);
+    private function saveImage(CreateCaptureDTO $dto): void {
+        if (env('APP_SALVAR_IMAGEM')) {
+            $imageData = base64_decode($dto->image);
+            $source = imagecreatefromstring($imageData);
+            $file = 'images/' . $dto->fileName;
+            $imageSave = imagejpeg($source, $file, 100); //validar quando true or false
+            imagedestroy($source);
+        }
     }
 }

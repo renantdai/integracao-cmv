@@ -2,31 +2,12 @@
 
 namespace App\Helpers;
 
+use App\Models\Directory as ModelsDirectory;
+
 class RegisteredCamerasHelper {
 
     public static function registered_cameras(): array {
-        return [
-            '192_168_26_11' => [
-                'idEquipment' => '211',
-                'idCam' => '26011'
-            ],
-            '192_168_26_111' => [
-                'idEquipment' => '211',
-                'idCam' => '26111'
-            ],
-            '192_168_26_12' => [
-                'idEquipment' => '212',
-                'idCam' => '26012'
-            ],
-            '192_168_26_112' => [
-                'idEquipment' => '212',
-                'idCam' => '26112'
-            ],
-            'smsalbatroz' => [
-                'idEquipment' => '211',
-                'idCam' => '111'
-            ]
-        ];
+        return ModelsDirectory::where('status', '=', 'ativo')->get()->toArray();
     }
 
     /**

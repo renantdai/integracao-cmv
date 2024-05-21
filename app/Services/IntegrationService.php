@@ -61,7 +61,7 @@ class IntegrationService {
             return false;
         }
 
-        $data = (array) $retorno->oneResultMsg->retOneRecepLeitura;
+        //$data = (array) $retorno->oneResultMsg->retOneRecepLeitura;
         /*         if ($data['cStat'] != 103) { #Testar retorno
             //criar log para erros;
             $this->repository->alterStatusCapture($dto, $dto::ERROR);

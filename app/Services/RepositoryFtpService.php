@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\CreateCaptureDTO;
 use App\Http\Controllers\Api\IntegrationController;
 use App\Models\Capture;
+use App\Models\Directory;
 use App\Repositories\Contracts\IntegrationRepositoryInterface;
 use App\Repositories\IntegrationEloquentORM;
 use FtpClient\FtpClient;
@@ -23,14 +24,34 @@ class RepositoryFtpService {
         protected FtpClient $ftp,
         public $sftp = null,
         public string $diretory = '',
+        protected $config = []
     ) {
         $this->registered_cameras = CreateCaptureDTO::registered_cameras();
     }
 
+
+    public function getConfig() {
+        return $this->config;
+    }
+
+    public function setConfig($config) {
+        $this->config = $config;
+    }
+
+    public function getInitConnection() {
+        if ($this->config['type'] == 'sftp') {
+            $testConnection = $this->getInitConectionSftp();
+        } else {
+            $testConnection = $this->getInitConectionFtp();
+        }
+
+        return $testConnection;
+    }
+
     public function getInitConectionFtp() {
         try {
-            $this->ftp->connect(env('HOST_FTP'), false, env('PORT_FTP'), 10);
-            $this->ftp->login(env('LOGIN_FTP'), env('PASSWORD_FTP'));
+            $this->ftp->connect($this->diretory, false, $this->config['port'], 10);
+            $this->ftp->login($this->config['login'], $this->config['password']);
             $this->ftp->chdir($this->diretory);
             $this->ftp->pasv(true);
 
@@ -41,16 +62,23 @@ class RepositoryFtpService {
     }
 
     public function getInitConectionSftp() {
-        $this->sftp = new SFTP(env('HOST_SFTP'), env('PORT_SFTP'));
-        $this->sftp->login(env('LOGIN_SFTP'), env('PASSWORD_SFTP'));
-        $this->sftp->chdir($this->diretory);
+        try {
+            $this->sftp = new SFTP($this->diretory, $this->config['port'], 60);
+            $this->sftp->login($this->config['login'], $this->config['password']);
+            $this->sftp->chdir($this->config['host']);
+
+            return ['error' => false];
+        } catch (Exception $e) {
+            return ['error' => true, 'msg' => 'Erro ao iniciar a conexao. ' . $e->getMessage()];
+        }
     }
 
-    public function registerDirectory(string $diretory): void {
-        if (!isset($this->registered_cameras[$diretory]['idCam'])) {
+    public function registerDirectory(string $directory): void {
+        $directorys = array_column($this->registered_cameras, 'directory');
+        if (!in_array($directory, $directorys)) {
             throw new Exception('Diretorio não registrado no sistema');
         }
-        $this->diretory = $diretory;
+        $this->diretory = $directory;
     }
 
     public function show() {
@@ -63,39 +91,6 @@ class RepositoryFtpService {
         #$ftp->removeByTime('/www/mysite.com/demo', time() - 86400);
 
         return $list;
-    }
-
-    public function verificaRepositorio() {
-        $testConnection = $this->getInitConectionFtp();
-        if ($testConnection['error']) {
-            return $testConnection;
-        }
-
-        $lastItemSent = $this->repository->lastSendCam($this->registered_cameras[$this->diretory]['idCam']);
-
-        $list = $this->ftp->nList('.', 'rsort');
-        if (empty($list)) {
-            return false;
-        }
-        $arrayItens = array_chunk($list, 10);
-        #$rawlist = $this->ftp->rawlist();
-        $plate = '';
-        foreach ($arrayItens[0] as $l) {
-            try {
-                $plate = $this->getPlateFromPath($l);
-                if ($plate == '0000000') {
-                    $this->ftp->delete($l);
-                    continue;
-                }
-                $sendStatus = $this->prepareSendCapture($l, $plate, $lastItemSent);
-                if ($sendStatus['error']) {
-                    continue; //criar log e tratar
-                }
-                $lastItemSent = $plate;
-            } catch (Exception $e) {
-                Log::info('Erro no fluxo de envio', [$e->getMessage()]);
-            }
-        }
     }
 
     public function prepareSendCapture($directoryCapture, $plate, $lastItemSent) {
@@ -112,38 +107,67 @@ class RepositoryFtpService {
             }
         }
 
-        $this->saveImage($directoryCapture);
+        if ($this->config['type'] == 'sftp') {
+            $this->saveImageSftp($directoryCapture);
+        } else {
+            $this->saveImage($directoryCapture);
+        }
 
-        return (array) $data;
+        return [(array) $data->data, 'error' => false];
     }
 
-    public function verificaRepositorioSftp() {
-        $this->getInitConectionSftp();
+    public function getList() {
+        if ($this->config['type'] == 'sftp') {
+            $this->sftp->setListOrder('filename', SORT_ASC, true);
+
+            return array_reverse($this->sftp->nlist());
+        } else {
+            return $this->ftp->nList('.', 'rsort');
+        }
+    }
+
+    public function repositoryInit() {
+        $testConnection = $this->getInitConnection();
+        if ($testConnection['error']) {
+            return $testConnection;
+        }
 
         if (!$this->validateCam()) {
             return false;
         }
 
-        $lastItemSent = $this->repository->lastSendCam($this->registered_cameras[$this->diretory]['idCam']);
+        $lastItemSent = $this->repository->lastSendCam($this->config['idCam']);
 
-        $this->sftp->setListOrder('filename', SORT_ASC, true);
+        $list = $this->getList();
 
-        $list = array_reverse($this->sftp->nlist());
-        $plate = $this->getPlateFromPath($list[0]);
-
-        if (!$this->validatePlate($lastItemSent, $plate)) {
+        if (empty($list)) {
             return false;
         }
-
-        $return = $this->sendCapture($list[0]);
-
-        if (!$return) {
-            return false;
+        $arrayItens = array_chunk($list, 10);
+        $plate = '';
+        $sucesso = [];
+        foreach ($arrayItens[0] as $l) {
+            if ($l == 'enviado' || $l == '.' || $l == '..' ) {
+                continue;
+            }
+            try {
+                $plate = $this->getPlateFromPath($l);
+                if ($plate == '0000000') {
+                    $this->ftp->delete($l);
+                    continue;
+                }
+                $sendStatus = $this->prepareSendCapture($l, $plate, $lastItemSent);
+                if ($sendStatus['error']) {
+                    continue; //criar log e tratar
+                }
+                $sucesso[$plate] = $sendStatus;
+                $lastItemSent = $plate;
+            } catch (Exception $e) {
+                Log::info('Erro no fluxo de envio', [$e->getMessage()]);
+            }
         }
 
-        $this->saveImageSftp($list[0]);
-
-        return $return;
+        return $sucesso;
     }
 
     private function validatePlate($lastPlateSend, $plate) {
@@ -183,7 +207,7 @@ class RepositoryFtpService {
             // $image = $this->ftp->get('tmp-images/teste2.jpg', $path, FTP_IMAGE);
             //$handle = fopen('images/', 'r+');
             $handle = 'images/'; // windows usar contrabarra dupla | linux barra simples
-            $nameTmp = $pathArray[1]. '_'. $pathArray[2] . '.jpg';
+            $nameTmp = $pathArray[1] . '_' . $pathArray[2] . '.jpg';
             $this->ftp->get($handle . $nameTmp, $path, FTP_IMAGE);
             $image = file_get_contents($handle . $nameTmp);
             $pathArray[0] = substr($pathArray[0], 2);
@@ -197,8 +221,8 @@ class RepositoryFtpService {
             "idRegister" => $idRegister,
             "captureDateTime" => Carbon::make($pathArray[0] . ' ' . $pathArray[1])->format('Y-m-d h:m:i'),
             "plate" => substr($pathArray[2], 0, 7),
-            "idEquipment" => $this->registered_cameras[$this->diretory]['idEquipment'],
-            "idCam" => $this->registered_cameras[$this->diretory]['idCam'],
+            "idEquipment" => $this->config['idEquipment'],
+            "idCam" => $this->config['idCam'],
             "image" => base64_encode($image)
         ];
     }
@@ -233,7 +257,9 @@ class RepositoryFtpService {
     }
 
     private function validateCam() {
-        return in_array($this->diretory, $this->registered_cameras);
+        $cams = array_column($this->registered_cameras, 'host');
+
+        return in_array($this->config['host'], $cams);
     }
 
     static public function testConnectionFtp($host, $user, $password, $port = 21) {
@@ -280,5 +306,9 @@ class RepositoryFtpService {
 
         // Fechar a conexão com o servidor FTP
         ftp_close($conn_id);
+    }
+
+    public function getDirectory() {
+        return Directory::where('status', '=', 'ativo')->get();
     }
 }

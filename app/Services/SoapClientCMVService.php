@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Support\Facades\Log;
 
 class SoapClientCMVService {
@@ -94,6 +95,9 @@ class SoapClientCMVService {
         $response2 = str_replace("</soap:Body>", "", $response1);
 
         // convertingc to XML
+        if ($response2 == 'OK') {
+            return $response2;
+        }
         $parser = simplexml_load_string($response2);
 
         if ($parser == false) {

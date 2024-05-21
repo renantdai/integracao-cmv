@@ -22,7 +22,7 @@ class RepositoryFtpController extends Controller {
     }
 
     public function verificaRepositorio() {
-        return $this->service->verificaRepositorio();
+        return $this->service->repositoryInit();
     }
 
     public function verificaRepositorioFtp(Request $request) {
@@ -32,7 +32,7 @@ class RepositoryFtpController extends Controller {
             return response()->json(['error' => true, 'msg' => $e->getMessage()], 400);
         }
 
-        return $this->service->verificaRepositorio();
+        return $this->service->repositoryInit();
     }
 
     public function verificaRepositorioSftp(Request $request) {
@@ -42,12 +42,34 @@ class RepositoryFtpController extends Controller {
             return response()->json(['error' => true, 'msg' => $e->getMessage()], 400);
         }
 
-        return $this->service->verificaRepositorioSftp();
+        return $this->service->repositoryInit();
     }
     /**
      * Display the specified resource.
      */
     public function show() {
         return $this->service->show();
+    }
+
+    public function directorySend() {
+        $directories = $this->service->getDirectory();
+        $values = [];
+
+        foreach ($directories as $directory) {
+            $values[] = $this->startReadingDirectory($directory);
+        }
+
+        return $values;
+    }
+
+    public function startReadingDirectory($request) {
+        try {
+            $this->service->registerDirectory($request->directory);
+            $this->service->setConfig($request->toArray());
+        } catch (Exception $e) {
+            return ['directory' => $request->directory, 'error' => true, 'msg' => $e->getMessage()];
+        }
+
+        return $this->service->repositoryInit();
     }
 }

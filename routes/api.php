@@ -26,6 +26,8 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::get('/ftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioFtp']);
     Route::get('/sftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioSftp']);
 
+    Route::get('/directory/send', [RepositoryFtpController::class, 'directorySend']);
+
     Route::post('/cam', [CamController::class, 'store']);
     Route::post('/cam/send', [CamController::class, 'send']);
 });

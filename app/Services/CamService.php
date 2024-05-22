@@ -92,6 +92,10 @@ class CamService {
 
         $this->repository->alterStatusCam($dto, $dto::SENT);
 
+        if ($data === 'OK') {
+            return ['error' => false, 'msg' => 'OK'];
+        }
+
         return ['error' => false, 'msg' => $data['xMotivo'], 'cStat' => $data['cStat']];
     }
 

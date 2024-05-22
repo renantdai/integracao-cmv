@@ -126,6 +126,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'cron_envio' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/cron_envio.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

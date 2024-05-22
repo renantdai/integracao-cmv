@@ -44,6 +44,14 @@ return [
             'throw' => false,
         ],
 
+        'certificate' => [
+            'driver' => 'local',
+            'root' => storage_path('certificado'),
+            'url' => env('APP_URL').'certificado',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

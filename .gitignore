@@ -19,3 +19,4 @@ yarn-error.log
 /.vscode
 /public/certificado/*.pem
 /public/images/*
+/storage/certificado/*.pem

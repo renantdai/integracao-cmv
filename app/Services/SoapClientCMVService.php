@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SoapClientCMVService {
 
@@ -40,7 +41,9 @@ class SoapClientCMVService {
         $url = $this->wsdl;
         $xml_post_string = $this->xmlPostString;
         $header = $this->getHeader();
-        $caFile = getcwd() . "/certificado/certificado.pem"; // Windows \\   |  linux /
+        $storage = Storage::disk('certificate');
+        $caFile = $storage->path('certificado.pem');
+        //$caFile = getcwd() . "\\certificado\certificado.pem"; // Windows \\   |  linux /
         #$CA = getcwd() . "\\certificado\CACert.cer";
         #$key = getcwd() . "\\certificado\key.key";
 

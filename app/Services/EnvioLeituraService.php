@@ -36,8 +36,8 @@ class EnvioLeituraService {
         $this->xmlPostString .= '<cUF>' . UF_CODIGO_IBGE . '</cUF>';
         $this->xmlPostString .= '<dhPass>' . $this->dto->captureDateTime . UTF . '</dhPass>';
         $this->xmlPostString .= '<CNPJOper>' . CNPJ_EMPRESA . '</CNPJOper>';
-        $this->xmlPostString .= '<cEQP>0000000000010' . $this->dto->idCam . '</cEQP>'; //criar regra para validar 15 digitos
-       // $this->xmlPostString .= '<latitude>' . $this->dto->latitude . '</latitude>';
+        $this->xmlPostString .= '<cEQP>' . str_pad(strval(env('IDENTIFICADOR_MUNICIPIO') . $this->dto->idCam), 15, '0', STR_PAD_LEFT) . '</cEQP>'; //criar regra para validar 15 digitos
+        // $this->xmlPostString .= '<latitude>' . $this->dto->latitude . '</latitude>';
         //$this->xmlPostString .= '<longitude>' . $this->dto->longitude . '</longitude>';
         //$this->xmlPostString .= '<xEQP>' . $this->dto->nameCam . '</xEQP>';
         $this->xmlPostString .= '<placa>' . $this->dto->plate . '</placa>';

@@ -26,7 +26,8 @@ class RegisteredCamerasHelper {
             '17' => 'Entrada do municipio de Imbe utilizando a RS-786 no bairro imara',
             '26011' => 'teste-Guaiba-11',
             '26111' => 'teste-Guaiba-111',
-            '26012' => 'PM-4309308-Av. Nei Brito x Br116-Entrada 2'
+            '012' => 'PM-4309308-Av. Nei Brito x Br116-Entrada 2',
+            '112' => 'PM-4309308-Av. Nei Brito x Br116-Entrada 1'
         ];
 
         return $cams[$idCam];

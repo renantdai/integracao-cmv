@@ -52,7 +52,7 @@ class RepositoryFtpService {
         try {
             $this->ftp->connect($this->diretory, false, $this->config['port'], 10);
             $this->ftp->login($this->config['login'], $this->config['password']);
-            $this->ftp->chdir($this->diretory);
+            $this->ftp->chdir($this->config['host']);
             $this->ftp->pasv(true);
 
             return ['error' => false];

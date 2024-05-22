@@ -208,7 +208,10 @@ class RepositoryFtpService {
             //$handle = fopen('images/', 'r+');
             $handle = 'images/'; // windows usar contrabarra dupla | linux barra simples
             $nameTmp = $pathArray[1] . '_' . $pathArray[2] . '.jpg';
-            $this->ftp->get($handle . $nameTmp, $path, FTP_IMAGE);
+            if (!$this->ftp->get($handle . $nameTmp, $path, FTP_IMAGE)) {
+                Log::error('Erro ao salvar arquivo ftp');
+                return ['error' => true, 'msg' => 'erro ao salvar a imagem no repositorio'];
+            }
             $image = file_get_contents($handle . $nameTmp);
             $pathArray[0] = substr($pathArray[0], 2);
         }

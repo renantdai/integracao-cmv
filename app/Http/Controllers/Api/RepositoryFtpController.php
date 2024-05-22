@@ -59,7 +59,12 @@ class RepositoryFtpController extends Controller {
             $values[] = $this->startReadingDirectory($directory);
         }
 
-        return $values;
+       $combinedValues = [];
+        foreach ($values as $subArray) {
+            $combinedValues = array_merge($combinedValues, $subArray);
+        }
+
+        return [$combinedValues];
     }
 
     public function startReadingDirectory($request) {

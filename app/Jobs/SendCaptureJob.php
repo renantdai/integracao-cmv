@@ -33,7 +33,7 @@ class SendCaptureJob implements ShouldQueue {
         $service = new RepositoryFtpService($orm, new FtpClient);
         $repository = new RepositoryFtpController($service);
         $retorno = $repository->directorySend();
-        $count = empty($retorno[0]) ? 0 : count($retorno);
+        $count = empty($retorno[0]) ? 0 : count($retorno[0]);
         Log::channel('cron_envio')->debug(now()->format('h:i:s d/m/Y') . ' executou o envio' . 'Registros Enviados: ' . $count);
     }
 }

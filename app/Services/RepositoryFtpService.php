@@ -147,7 +147,7 @@ class RepositoryFtpService {
         $plate = '';
         $sucesso = [];
         foreach ($arrayItens[0] as $l) {
-            if ($l == 'enviado' || $l == '.' || $l == '..' ) {
+            if ($l == 'enviado' || $l == '.' || $l == '..' || $l == './enviado' || strpos($l, 'enviado')) {
                 continue;
             }
             try {

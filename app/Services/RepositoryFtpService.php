@@ -203,11 +203,9 @@ class RepositoryFtpService {
         if (!is_null($this->sftp)) {
             $image = $this->sftp->get($path);
         } else {
-            //$this->ftp->get('.', $path, FTP_IMAGE);
-            // $image = $this->ftp->get('tmp-images/teste2.jpg', $path, FTP_IMAGE);
-            //$handle = fopen('images/', 'r+');
-            $handle = 'images/'; // windows usar contrabarra dupla | linux barra simples
-            $nameTmp = $pathArray[1] . '_' . $pathArray[2] . '.jpg';
+            //$handle = fopen('php://temp/', 'w');
+            $handle = public_path('images/');
+            $nameTmp = $pathArray[1] . '_' . $pathArray[2];
             if (!$this->ftp->get($handle . $nameTmp, $path, FTP_IMAGE)) {
                 Log::error('Erro ao salvar arquivo ftp');
                 return ['error' => true, 'msg' => 'erro ao salvar a imagem no repositorio'];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CamController;
+use App\Http\Controllers\Admin\DirectoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,3 +27,8 @@ Route::get('/cams/{id}', [CamController::class, 'show'])->name('cams.show');
 Route::post('/cams', [CamController::class, 'store'])->name('cams.store');
 Route::get('/cams', [CamController::class, 'index'])->name('cams.index');
 Route::get('/cams/{id}/send', [CamController::class, 'send'])->name('cams.send');
+
+Route::get('/directories', [DirectoryController::class, 'index'])->name('directories.index');
+Route::get('/directories/{id}/edit', [DirectoryController::class, 'edit'])->name('directories.edit');
+Route::get('/directories/{id}', [DirectoryController::class, 'show'])->name('directories.show');
+Route::get('/directories/{id}/send', [DirectoryController::class, 'send'])->name('directories.send');

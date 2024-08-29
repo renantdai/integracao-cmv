@@ -4,12 +4,9 @@
 namespace App\DTO;
 
 use App\Helpers\RegisteredCamerasHelper;
+use App\Models\SituacaoEnvio;
 
 class CreateCaptureDTO {
-    const RECEBIDO = 1;
-    const SENT = 2;
-    const ERROR = 3;
-
     public function __construct(
         public $id,
         public $idRegister,
@@ -39,7 +36,7 @@ class CreateCaptureDTO {
             $request->longitude,
             $request->image,
             str_replace(array('.', '-', '/', ':', ' '), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
-            self::RECEBIDO
+            SituacaoEnvio::RECEBIDO
         );
     }
 

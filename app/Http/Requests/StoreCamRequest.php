@@ -35,6 +35,24 @@ class StoreCamRequest extends FormRequest {
             'tpEQP' => ['required', 'min:1', 'max:1'],
             'xRefCompl' => ['required', 'min:2', 'max:200']
         ];
+        if(!$this->cEQP){
+            $rules = [
+                'cEQP' => 'required|min:3|max:255|unique:cams',
+                'tpAmb' => ['required', 'min:1', 'max:1'],
+                'verAplic' => ['required', 'min:1', 'max:20'],
+                'tpMan' => ['required', 'min:1', 'max:1'],
+                'dhReg' => ['required', 'min:25', 'max:25'],
+                'CNPJOper' => ['required', 'min:14', 'max:14'],
+                'cEQP' => ['required', 'min:15', 'max:15'],
+                'xEQP' => ['required', 'min:1', 'max:50'],
+                'cUF' => ['required', 'min:2', 'max:2'],
+                'tpSentido' => ['required', 'min:1', 'max:1'],
+                'latitude' => ['required', 'min:1'], //float - criar validação
+                'longitude' => ['required', 'min:1'], //float - criar validação
+                'tpEQP' => ['required', 'min:1', 'max:1'],
+                'xRefCompl' => ['required', 'min:2', 'max:200']
+            ];
+        }
 
         if ($this->method() === 'PUT'  || $this->method() === 'PATCH') {
             $id = $this->support ?? $this->id;

@@ -25,7 +25,9 @@ class CreateCamDTO {
         public string $longitude,
         public string $tpEQP,
         public string $xRefCompl,
-        public string $statusSend
+        public string $statusSend,
+        public string $equipament,
+        //adicionar equipamento gateway
     ) {
     }
 
@@ -46,7 +48,30 @@ class CreateCamDTO {
             $request->longitude,
             $request->tpEQP,
             $request->xRefCompl,
-            self::RECEBIDO
+            self::RECEBIDO,
+            1
         );
+    }
+
+    public static function makeFromSave(CreateCamDTO $request): array {
+        return [
+            'tipo_ambiente_id' => $request->tpAmb,
+            'tipo_manutencao_id' => $request->tpMan->sendFromValue($request->tpMan->name),
+            'equipamentos_id' => $request->equipament,
+            'versao_aplicacao' => $request->verAplic,
+            'data_registro' => $request->dhReg,
+            'identificador_equipamento' => $request->cEQP,
+            'nome_amigavel' => $request->xEQP,
+            'uf_estado' => $request->cUF,
+            'sentido_id' => $request->tpSentido,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'tipo_equipamento_id' => $request->tpEQP,
+            'referencia_complementar' => $request->xRefCompl,
+            'situacao_envio_id' => $request->statusSend,
+            'situacao_registro_id' => 1,
+            'usuario_criacao_id' => 1,
+            'usuario_alteracao_id' => 1
+        ];
     }
 }

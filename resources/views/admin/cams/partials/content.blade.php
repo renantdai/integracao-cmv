@@ -37,18 +37,18 @@
                                 {{ $cam->id }}
                             </td>
                             <td class="px-12 py-2 text-sm font-medium whitespace-nowrap">
-                                @if($cam->tpMan == 'Cadastramento')
+                                @if($cam->tipo_manutencao_id == '1')
                                 <div class="inline px-3 py-1 text-sm font-normal rounded-full text-7-500 gap-x-2 bg-7-100/60">
-                                    {{ $cam->tpMan }}
+                                    {{ $cam->tipo_manutencao_id }}
                                 </div>
                                 @endif
                             </td>
                             <td class="px-4 py-2 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                {{ $cam->cEQP }}
+                                {{ $cam->identificador_equipamento }}
                             </td>
                             <td class="px-4 py-2 text-sm whitespace-nowrap">
                                 <div class="flex items-center">
-                                    {{ $cam->statusSend }}
+                                    {{ $cam->situacao_envio_id }}
                                 </div>
                             </td>
 

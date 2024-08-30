@@ -19,7 +19,7 @@ class CamEloquentORM implements CamRepositoryInterface {
         $result =  $this->model
             ->where(function ($query) use ($filter) {
                 if ($filter) {
-                    $query->where('tpMan', $filter);
+                    $query->where('tipo_ambiente_id', $filter);
                 }
             })
             ->paginate($totalPerPage, ["*"], 'page', $page);
@@ -44,9 +44,7 @@ class CamEloquentORM implements CamRepositoryInterface {
     }
 
     public function new(CreateCamDTO $dto): stdClass {
-        $cam =  $this->model->create(
-            (array) $dto
-        );
+        $cam =  $this->model->create((array) CreateCamDTO::makeFromSave($dto));
 
         return (object) $cam->toArray();
     }
@@ -64,6 +62,6 @@ class CamEloquentORM implements CamRepositoryInterface {
     }
 
     public function alterStatusCam(CreateCamDTO $dto, $status) {
-        return ($this->model->where('id', $dto->id)->update(['statusSend' => $status]));
+        return ($this->model->where('id', $dto->id)->update(['situacao_envio_id' => $status]));
     }
 }

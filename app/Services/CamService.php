@@ -18,11 +18,7 @@ class CamService {
     ) {
     }
 
-    public function paginate(
-        int $page = 1,
-        int $totalPerPage = 15,
-        string $filter = null
-    ) {
+    public function paginate(int $page = 1, int $totalPerPage = 15, string $filter = null) {
 
         return $this->repository->paginate(
             page: $page,
@@ -100,12 +96,12 @@ class CamService {
     }
 
     public function send(string $id) {
-        $cam = Cam::find($id);
+        $cam = Cam::findConvert($id);
         if (!$cam) {
             return ['error' => true, 'msg' => 'nao existe esse id'];
         }
 
-        $validateDto = new StoreCamRequest($cam->toArray());
+        $validateDto = new StoreCamRequest($cam);
 
         $dto = CreateCamDTO::makeFromRequest($validateDto);
 

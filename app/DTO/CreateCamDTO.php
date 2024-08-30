@@ -27,6 +27,7 @@ class CreateCamDTO {
         public string $xRefCompl,
         public string $statusSend,
         public string $equipament,
+        public string $idRegister,
         //adicionar equipamento gateway
     ) {
     }
@@ -49,12 +50,14 @@ class CreateCamDTO {
             $request->tpEQP,
             $request->xRefCompl,
             self::RECEBIDO,
+            1,
             1
         );
     }
 
     public static function makeFromSave(CreateCamDTO $request): array {
         return [
+            'id_registro_camera' => $request->idRegister,
             'tipo_ambiente_id' => $request->tpAmb,
             'tipo_manutencao_id' => $request->tpMan->sendFromValue($request->tpMan->name),
             'equipamentos_id' => $request->equipament,
@@ -71,7 +74,8 @@ class CreateCamDTO {
             'situacao_envio_id' => $request->statusSend,
             'situacao_registro_id' => 1,
             'usuario_criacao_id' => 1,
-            'usuario_alteracao_id' => 1
+            'usuario_alteracao_id' => 1,
+            'cnpj' => $request->CNPJOper
         ];
     }
 }

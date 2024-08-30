@@ -11,6 +11,7 @@ class Cam extends Model {
     protected $table = 'cameras';
 
     protected $fillable = [
+        'id_registro_camera',
         'tipo_ambiente_id',
         'tipo_manutencao_id',
         'equipamentos_id',
@@ -27,7 +28,8 @@ class Cam extends Model {
         'situacao_envio_id',
         'situacao_registro_id',
         'usuario_criacao_id',
-        'usuario_alteracao_id'
+        'usuario_alteracao_id',
+        'cnpj'
     ];
 
     static function findConvert($id) {
@@ -37,6 +39,7 @@ class Cam extends Model {
         }
 
         return [
+            'idRegister' => $data->id_registro_camera,
             'tpAmb' => $data->tipo_ambiente_id,
             'tpMan' => $data->tipo_manutencao_id,
             'equipament' => $data->equipamentos_id,

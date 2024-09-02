@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTO\CreateCaptureDTO;
 use App\DTO\CreateCamDTO;
+use App\DTO\CreateDirectoryDTO;
 use App\Http\Requests\StoreCamRequest;
 use App\Models\Cam;
 use App\Repositories\Contracts\CamRepositoryInterface;
@@ -36,7 +37,7 @@ class DirectoryService {
         return $this->repository->findOne($id);
     }
 
-    public function new(CreateCamDTO $dto): stdClass {
+    public function new(CreateDirectoryDTO $dto): stdClass {
         return $this->repository->new($dto);
     }
 

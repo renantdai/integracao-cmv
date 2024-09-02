@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\IntegrationController;
 use App\Http\Controllers\Api\RepositoryFtpController;
 use App\Http\Controllers\Api\CamController;
+use App\Http\Controllers\Api\DirectoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::get('/sftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioSftp']);
 
     Route::get('/directory/send', [RepositoryFtpController::class, 'directorySend']);
+    Route::post('/directory', [DirectoryController::class, 'store']);
 
     Route::post('/cam', [CamController::class, 'store']);
     Route::post('/cam/send', [CamController::class, 'send']);

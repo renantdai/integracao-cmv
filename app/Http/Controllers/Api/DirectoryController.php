@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\DTO\CreateDirectoryDTO;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCamRequest;
 use App\Http\Requests\StoreDirectoryRequest;
 use App\Services\DirectoryService;
 use Illuminate\Http\Request;
@@ -12,29 +13,8 @@ class DirectoryController extends Controller {
     public function __construct(protected DirectoryService $service) {
     }
 
-    public function index(Request $request) {
-
-        $directories = $this->service->paginate(
-            page: $request->get('page', 1),
-            totalPerPage: $request->get('per_page', 5),
-            filter: $request->filter,
-        );
-
-        $filters = ['filter' => $request->get('filter', '')];
-
-        return view('admin/directories/index', compact('directories', 'filters'));
-    }
-
-    public function create() {
-        return view('admin/cams/create');
-    }
-
     public function store(StoreDirectoryRequest $request) {
-        $this->service->new(CreateDirectoryDTO::makeFromRequest($request));
-
-        return redirect()
-            ->route('cams.index')
-            ->with('message', 'Cadastrado com sucesso!');
+        return $this->service->new(CreateDirectoryDTO::makeFromRequest($request));
     }
 
     public function show(string|int $id) {

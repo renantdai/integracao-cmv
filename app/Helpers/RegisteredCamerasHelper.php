@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Cam;
 use App\Models\Directory as ModelsDirectory;
 
 class RegisteredCamerasHelper {
@@ -17,19 +18,8 @@ class RegisteredCamerasHelper {
      * @return string
      */
     public static function getNameCam($idCam): string {
-        $cams = [
-            '01' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da direita',
-            '13' => 'Entrada da cidade pela ponte Tramandai - Imbe utilizando a faixa da esquerda',
-            '14' => 'Saida do municipio de Imbe utilizando a via beira mar no bairro imara',
-            '15' => 'Entrada do municipio de Imbe utilizando a via beira mar no bairro imara',
-            '16' => 'Saida do municipio de Imbe utilizando a RS-786 no bairro imara',
-            '17' => 'Entrada do municipio de Imbe utilizando a RS-786 no bairro imara',
-            '26011' => 'teste-Guaiba-11',
-            '26111' => 'teste-Guaiba-111',
-            '012' => 'PM-4309308-Av. Nei Brito x Br116-Entrada 2',
-            '112' => 'PM-4309308-Av. Nei Brito x Br116-Entrada 1'
-        ];
+        $camera = Cam::select('nome_amigavel')->where('id', '=', $idCam)->first();
 
-        return $cams[$idCam];
+        return $camera->nome_amigavel;
     }
 }

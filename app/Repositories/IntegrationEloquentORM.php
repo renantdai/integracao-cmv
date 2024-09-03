@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\DTO\CreateCaptureDTO;
 use App\Models\Capture;
+use App\Models\SituacaoEnvio;
 use App\Repositories\Contracts\IntegrationRepositoryInterface;
 
 use stdClass;
@@ -24,17 +25,17 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
 
     public function validateStatus(CreateCaptureDTO $dto): bool {
         $plate = '';
-        if ($dto->idCam) {
-            $plate = $this->model->select('plate')
+        if ($dto->cameras_id) {
+            $plate = $this->model->select('placa')
                 ->where([
-                    ['idCam', '=', $dto->idCam],
-                    ['statusSend', '=', $dto::SENT]
+                    ['cameras_id', '=', $dto->cameras_id],
+                    ['situacao_envio_id', '=', SituacaoEnvio::ENVIADO]
                 ])->orderBy('id', 'desc')->first();
         } else {
-            $plate = $this->model->select('plate')
+            $plate = $this->model->select('placa')
                 ->where([
-                    ['idEquipment', '=', $dto->idEquipment],
-                    ['statusSend', '=', $dto::SENT]
+                    ['cameras_id', '=', $dto->cameras_id],
+                    ['situacao_envio_id', '=', SituacaoEnvio::ENVIADO]
                 ])->orderBy('id', 'desc')->first();
         }
 
@@ -42,7 +43,7 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
             return true;
         }
 
-        return ($plate->plate != $dto->plate) ? true : false;
+        return ($plate->placa != $dto->placa) ? true : false;
     }
 
     public function findOne(string $plate): stdClass|null {
@@ -55,7 +56,7 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
     }
 
     public function alterStatusCapture(CreateCaptureDTO $dto, $status): bool {
-        return ($this->model->where('id', $dto->id)->update(['statusSend' => $status]));
+        return ($this->model->where('id', $dto->id)->update(['situacao_envio_id' => $status]));
     }
 
     public function lastSendCam(string $idCam): string {

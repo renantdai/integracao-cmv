@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTO\CreateCaptureDTO;
+use App\Models\SituacaoEnvio;
 use App\Repositories\Contracts\IntegrationRepositoryInterface;
 use App\Services\EnvioLeituraService;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +25,7 @@ class IntegrationService {
         if (!$dto->image) {
             return false;
         }
-        if ($dto->statusSend == CreateCaptureDTO::RECEBIDO) {
+        if ($dto->situacao_envio_id == SituacaoEnvio::RECEBIDO) {
             return $this->repository->validateStatus($dto);
         }
 
@@ -56,7 +57,7 @@ class IntegrationService {
     private function validaRetornoEnvioLeituraService($retorno, CreateCaptureDTO $dto): bool {
         if ($retorno == false) {
             //criar log para erros;
-            $this->repository->alterStatusCapture($dto, $dto::ERROR);
+            $this->repository->alterStatusCapture($dto, SituacaoEnvio::ERRO);
 
             return false;
         }
@@ -68,7 +69,7 @@ class IntegrationService {
 
             return false;
         } */
-        $this->repository->alterStatusCapture($dto, $dto::SENT);
+        $this->repository->alterStatusCapture($dto, SituacaoEnvio::ENVIADO);
 
         return true;
     }

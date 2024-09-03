@@ -9,17 +9,16 @@ use App\Models\SituacaoEnvio;
 class CreateCaptureDTO {
     public function __construct(
         public $id,
-        public $idRegister,
-        public $captureDateTime, //yyyy-MM-dd HH:mm:ss
-        public string $plate,
-        public string $idEquipment,
-        public $idCam,
+        public $id_registro,
+        public $data_captura, //yyyy-MM-dd HH:mm:ss
+        public string $placa,
+        public $cameras_id,
         public $nameCam,
         public $latitude,
         public $longitude,
         public $image, //Base64
         public $fileName,
-        public $statusSend
+        public $situacao_envio_id
     ) {
     }
 
@@ -29,7 +28,6 @@ class CreateCaptureDTO {
             $request->idRegister,
             str_replace(' ', 'T', $request->captureDateTime),
             $request->plate,
-            $request->idEquipment,
             $request->idCam,
             self::getNameCam($request->idCam),
             $request->latitude,

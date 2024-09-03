@@ -9,12 +9,16 @@ class Capture extends Model
 {
     use HasFactory;
 
+    protected $table = 'capturas';
+
     protected $fillable = [
-        'idCam',
-        'idEquipment',
-        'plate',
-        'statusSend',
-        'fileName',
-        'captureDateTime'
+        'cameras_id',
+        'situacao_envio_id',
+        'placa',
+        'nome_imagem',
+        'local_imagem',
+        'data_captura',
+        'indice_confianca',
+        'id_registro'
     ];
 }

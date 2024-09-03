@@ -34,13 +34,13 @@ class EnvioLeituraService {
 
         $this->xmlPostString .= '<infLeitura>';
         $this->xmlPostString .= '<cUF>' . UF_CODIGO_IBGE . '</cUF>';
-        $this->xmlPostString .= '<dhPass>' . $this->dto->captureDateTime . UTF . '</dhPass>';
+        $this->xmlPostString .= '<dhPass>' . $this->dto->data_captura . UTF . '</dhPass>';
         $this->xmlPostString .= '<CNPJOper>' . CNPJ_EMPRESA . '</CNPJOper>';
-        $this->xmlPostString .= '<cEQP>' . str_pad(strval(env('IDENTIFICADOR_MUNICIPIO') . $this->dto->idCam), 15, '0', STR_PAD_LEFT) . '</cEQP>'; //criar regra para validar 15 digitos
+        $this->xmlPostString .= '<cEQP>' . str_pad(strval(env('IDENTIFICADOR_MUNICIPIO') . $this->dto->cameras_id), 15, '0', STR_PAD_LEFT) . '</cEQP>'; //criar regra para validar 15 digitos
         // $this->xmlPostString .= '<latitude>' . $this->dto->latitude . '</latitude>';
         //$this->xmlPostString .= '<longitude>' . $this->dto->longitude . '</longitude>';
         //$this->xmlPostString .= '<xEQP>' . $this->dto->nameCam . '</xEQP>';
-        $this->xmlPostString .= '<placa>' . $this->dto->plate . '</placa>';
+        $this->xmlPostString .= '<placa>' . $this->dto->placa . '</placa>';
         $this->xmlPostString .= '<tpVeiculo>1</tpVeiculo>';
         $this->xmlPostString .= '<foto>' . $this->dto->image . '</foto>';
         $this->xmlPostString .= '<indiceConfianca>100</indiceConfianca>';

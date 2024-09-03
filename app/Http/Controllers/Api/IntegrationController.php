@@ -8,6 +8,7 @@ use App\Services\IntegrationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\CaptureResource;
+use App\Models\SituacaoEnvio;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
@@ -51,7 +52,7 @@ class IntegrationController extends Controller {
                 'msg' => 'Não foi possivel transmitir para o CMV, a requisição ficará na fila de transmissão'
             ], Response::HTTP_OK);
         }
-        $dto->statusSend = $dto::SENT;
+        $dto->situacao_envio_id = SituacaoEnvio::ENVIADO; //??? verificar
 
         return (new CaptureResource($capture))
             ->response()

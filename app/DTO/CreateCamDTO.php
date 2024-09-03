@@ -3,6 +3,7 @@
 namespace App\DTO;
 
 use App\Enums\CamStatus;
+use App\Enums\TipoSentidoCamera;
 use App\Http\Requests\StoreCamRequest;
 
 class CreateCamDTO {
@@ -44,7 +45,7 @@ class CreateCamDTO {
             $request->cEQP,
             $request->xEQP,
             $request->cUF,
-            $request->tpSentido,
+            TipoSentidoCamera::sendFromString($request->tpSentido),
             $request->latitude,
             $request->longitude,
             $request->tpEQP,
@@ -66,7 +67,7 @@ class CreateCamDTO {
             'identificador_equipamento' => $request->cEQP,
             'nome_amigavel' => $request->xEQP,
             'uf_estado' => $request->cUF,
-            'sentido_id' => $request->tpSentido,
+            'sentido_id' => TipoSentidoCamera::sendFromSave($request->tpSentido),
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             'tipo_equipamento_id' => $request->tpEQP,

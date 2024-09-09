@@ -12,6 +12,7 @@ use App\Repositories\Contracts\DirectoryRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 use stdClass;
 
 class DirectoryService {
@@ -112,5 +113,13 @@ class DirectoryService {
         $dto = CreateCamDTO::makeFromRequest($validateDto);
 
         return $this->sendCam($dto);
+    }
+
+    public function certificado($certificado) {
+        $dados = base64_decode($certificado);
+        $storage = Storage::disk('certificate');
+        file_put_contents($storage->path('certificado.pem'), $dados);
+
+        return ['error' => false, 'msg'=> 'arquivo registrado'];
     }
 }

@@ -20,8 +20,12 @@ use App\Http\Controllers\Api\DirectoryController;
 
 Route::namespace('API')->name('api.')->group(function () {
     Route::post('/capture', [IntegrationController::class, 'capture']);
-    Route::post('/ftp/test', [RepositoryFtpController::class, 'testarConexao']);
-    Route::post('/ftp/php/test', [RepositoryFtpController::class, 'testarConexaoPHP']);
+    Route::post('/cam', [CamController::class, 'store']);
+    Route::post('/cam/send', [CamController::class, 'send']);
+
+    Route::post('/ftp/test', [RepositoryFtpController::class, 'testarConexao']); //teste com a classe FtpClient
+    Route::post('/ftp/php/test', [RepositoryFtpController::class, 'testarConexaoPHP']); //teste com metodo proprio do php ftp
+
     Route::get('/ftp', [RepositoryFtpController::class, 'show']);
     Route::get('/ftp/verificar', [RepositoryFtpController::class, 'verificaRepositorio']);
     Route::get('/ftp/verificar/{directory}', [RepositoryFtpController::class, 'verificaRepositorioFtp']);
@@ -30,8 +34,9 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::get('/directory/send', [RepositoryFtpController::class, 'directorySend']);
     Route::post('/directory', [DirectoryController::class, 'store']);
 
-    Route::post('/cam', [CamController::class, 'store']);
-    Route::post('/cam/send', [CamController::class, 'send']);
+    Route::post('/certificado', [DirectoryController::class, 'certificado']);
+
+
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

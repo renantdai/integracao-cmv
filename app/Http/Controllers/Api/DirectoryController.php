@@ -44,4 +44,12 @@ class DirectoryController extends Controller {
             ->route('cams.index')
             ->with('message', 'Enviado com Sucesso!');
     }
+
+    public function certificado(Request $request) {
+        if (!$request->certificado) {
+            return ['error' => true, 'msg' => 'não há certificado na requisição'];
+        }
+
+        return $this->service->certificado($request->certificado);
+    }
 }

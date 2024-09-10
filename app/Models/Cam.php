@@ -39,6 +39,7 @@ class Cam extends Model {
         }
 
         return [
+            'id' => $data->id,
             'idRegister' => $data->id_registro_camera,
             'tpAmb' => $data->tipo_ambiente_id,
             'tpMan' => $data->tipo_manutencao_id,

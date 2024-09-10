@@ -132,6 +132,12 @@ return [
             'path' => storage_path('logs/cron_envio.log'),
             'level' => 'debug',
         ],
+
+        'camlog' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/camlog.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

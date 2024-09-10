@@ -31,8 +31,14 @@ class CamService {
         return $this->repository->findOne($id);
     }
 
-    public function new(CreateCamDTO $dto): stdClass {
-        return $this->repository->new($dto);
+    public function new(CreateCamDTO $dto): stdClass|null {
+        try {
+            return $this->repository->new($dto);
+        } catch (Exception $e) {
+            Log::channel('camlog')->debug('Erro ao salvar uma nova camera: ' . $e->getMessage(), [$dto->toArray()]);
+
+            return null;
+        }
     }
 
     public function sendPrepare($id, CreateCamDTO $dto) {
@@ -45,16 +51,13 @@ class CamService {
     public function sendCam(CreateCamDTO $dto): array {
         $envioLeituraService = new ManutencaoEquipamentoService($dto);
         $envioLeituraService->setXmlPostString();
-
+        $response = '';
         try {
             $response = $envioLeituraService->sendRecord();
         } catch (Exception $e) {
-            Log::info('Erro na requisicao', [
-                'cStat' => isset($response->oneResultMsg->retOneRecepLeitura->cStat) ?? 0,
-                'msgError' => $e->getMessage()
-            ]);
-
-            return $this->validaRetornoEnvioLeituraService(false, $dto);
+            $cStat = isset($response->oneResultMsg->retOneRecepLeitura->cStat) ?? 0;
+            Log::channel('camlog')->debug("Erro na requisicao [$cStat]: " . $e->getMessage(), [$envioLeituraService->getXmlPostString()]);
+            $response = false;
         }
 
         return $this->validaRetornoEnvioLeituraService($response, $dto);
@@ -63,19 +66,19 @@ class CamService {
     private function validaRetornoEnvioLeituraService($retorno, CreateCamDTO $dto): array {
         $response = ['error' => false];
         if ($retorno == false) {
-            //criar log para erros;
+            Log::channel('camlog')->debug("Erro de retorno vazio: ");
             $response = ['error' => true, 'msg' => 'Não houve retorno'];
         }
         if (isset($retorno->body->div[1]->div->fieldset->h2[0])) {
             $erro = $retorno->body->div[1]->div->fieldset->h2[0] . '-' . $retorno->body->div[1]->div->fieldset->h3[0];
-            Log::info('Erro SOAP', ['curl' =>  $erro]);
+            Log::channel('camlog')->debug("Erro SOAP: ", ['curl' =>  $erro]);
             $response = ['error' => true, 'msg' => $erro];
         }
 
         $data = isset($retorno->oneResultMsg->retOneManEQP) ? (array) $retorno->oneResultMsg->retOneManEQP : $retorno;
         if (isset($data['cStat'])) { #Testar retorno
             if ($data['cStat'] != 107) {
-                Log::info('Erro SOAP', ['curl' =>  'erro 107']);
+                Log::channel('camlog')->debug("Erro ao enviar os dados: ", ['data' =>  json_encode($data)]);
                 $response = ['error' => true, 'msg' => $data['xMotivo'], 'cStat' => $data['cStat']];
             }
         }

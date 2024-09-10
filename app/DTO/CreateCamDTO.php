@@ -6,7 +6,7 @@ use App\Enums\CamStatus;
 use App\Enums\TipoSentidoCamera;
 use App\Http\Requests\StoreCamRequest;
 
-class CreateCamDTO {
+class CreateCamDTO extends AbstractDTO {
     const RECEBIDO = 1;
     const SENT = 2;
     const ERROR = 3;

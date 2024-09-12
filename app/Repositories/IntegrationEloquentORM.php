@@ -59,11 +59,11 @@ class IntegrationEloquentORM implements IntegrationRepositoryInterface {
         return ($this->model->where('id', $dto->id)->update(['situacao_envio_id' => $status]));
     }
 
-    public function lastSendCam(string $idCam): string {
-        $plate = $this->model->select('plate')
+    public function lastSendCam(string $idCam): string | null {
+        $plate = $this->model->select('placa')
             ->where([
-                ['idCam', '=', $idCam],
-                ['statusSend', '=', CreateCaptureDTO::SENT]
+                ['cameras_id', '=', $idCam],
+                ['situacao_envio_id', '=', SituacaoEnvio::RECEBIDO]
             ])->orderBy('id', 'desc')->first();
 
         if (empty($plate)) {

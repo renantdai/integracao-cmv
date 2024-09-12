@@ -55,23 +55,29 @@ class IntegrationService {
     }
 
     private function validaRetornoEnvioLeituraService($retorno, CreateCaptureDTO $dto): bool {
+        $response = ['error' => false];
         if ($retorno == false) {
             //criar log para erros;
             $this->repository->alterStatusCapture($dto, SituacaoEnvio::ERRO);
 
             return false;
         }
-
-        //$data = (array) $retorno->oneResultMsg->retOneRecepLeitura;
-        /*         if ($data['cStat'] != 103) { #Testar retorno
-            //criar log para erros;
-            $this->repository->alterStatusCapture($dto, $dto::ERROR);
+        if (isset($retorno->oneResultMsg->retOneRecepLeitura)) {
+            $cStat = isset($retorno->oneResultMsg->retOneRecepLeitura->cStat) ? (string) $retorno->oneResultMsg->retOneRecepLeitura->cStat : 0;
+            if ($cStat == '103') {
+                $this->repository->alterStatusCapture($dto, SituacaoEnvio::ENVIADO);
+                return true;
+            }
+            $mensagem = isset($retorno->oneResultMsg->retOneRecepLeitura->xMotivo) ? (string) $retorno->oneResultMsg->retOneRecepLeitura->xMotivo : 'vazio';
+            $this->repository->alterStatusCapture($dto, SituacaoEnvio::ERRO);
+            Log::error("[$cStat]: $mensagem ");
 
             return false;
-        } */
-        $this->repository->alterStatusCapture($dto, SituacaoEnvio::ENVIADO);
+        }
+        $this->repository->alterStatusCapture($dto, SituacaoEnvio::ERRO);
+        Log::error("[0-0]: Erro generico ");
 
-        return true;
+        return false;
     }
 
     private function saveImage(CreateCaptureDTO $dto): void {

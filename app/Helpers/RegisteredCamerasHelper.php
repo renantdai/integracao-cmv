@@ -8,7 +8,7 @@ use App\Models\Directory as ModelsDirectory;
 class RegisteredCamerasHelper {
 
     public static function registered_cameras(): array {
-        return ModelsDirectory::where('status', '=', 'ativo')->get()->toArray();
+        return ModelsDirectory::where('situacao_registro_id', '=', 1)->get()->toArray();
     }
 
     /**

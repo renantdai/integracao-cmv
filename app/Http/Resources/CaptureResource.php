@@ -17,10 +17,9 @@ class CaptureResource extends JsonResource
     {
         return [
             'identify' => $this->id,
-            'idEquipment' => $this->idEquipment,
-            'plate' => $this->plate,
+            'plate' => $this->placa,
             'dt_created' => Carbon::make($this->created_at)->format('Y-m-d'),
-            'status' => $this->statusSend
+            'status' => $this->situacao_envio_id
         ];
     }
 }

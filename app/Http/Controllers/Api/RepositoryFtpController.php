@@ -27,7 +27,7 @@ class RepositoryFtpController extends Controller {
 
     public function verificaRepositorioFtp(Request $request) {
         try {
-            $this->service->registerDirectory($request->directory);
+            $this->service->registerDirectory($request->diretorio);
         } catch (Exception $e) {
             return response()->json(['error' => true, 'msg' => $e->getMessage()], 400);
         }
@@ -37,7 +37,7 @@ class RepositoryFtpController extends Controller {
 
     public function verificaRepositorioSftp(Request $request) {
         try {
-            $this->service->registerDirectory($request->directory);
+            $this->service->registerDirectory($request->diretorio);
         } catch (Exception $e) {
             return response()->json(['error' => true, 'msg' => $e->getMessage()], 400);
         }
@@ -69,10 +69,10 @@ class RepositoryFtpController extends Controller {
 
     public function startReadingDirectory($request) {
         try {
-            $this->service->registerDirectory($request->directory);
+            $this->service->registerDirectory($request->diretorio);
             $this->service->setConfig($request->toArray());
         } catch (Exception $e) {
-            return ['directory' => $request->directory, 'error' => true, 'msg' => $e->getMessage()];
+            return ['directory' => $request->diretorio, 'error' => true, 'msg' => $e->getMessage()];
         }
 
         return $this->service->repositoryInit();

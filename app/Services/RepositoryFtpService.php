@@ -16,7 +16,8 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 class RepositoryFtpService {
-
+    const TIPO_CONEXAO_FTP = 1;
+    const TIPO_CONEXAO_SFTP = 2;
     public $registered_cameras = [];
 
     public function __construct(
@@ -39,7 +40,7 @@ class RepositoryFtpService {
     }
 
     public function getInitConnection() {
-        if ($this->config['type'] == 'sftp') {
+        if ($this->config['tipo_conexao_id'] == self::TIPO_CONEXAO_SFTP) {
             $testConnection = $this->getInitConectionSftp();
         } else {
             $testConnection = $this->getInitConectionFtp();
@@ -49,10 +50,12 @@ class RepositoryFtpService {
     }
 
     public function getInitConectionFtp() {
+        /*         $conn_id = ftp_connect($this->config['host']);
+        $login_result = ftp_login($conn_id, $this->config['login'], $this->config['password']); */
         try {
-            $this->ftp->connect($this->diretory, false, $this->config['port'], 10);
+            $this->ftp->connect($this->config['host'], false, $this->config['porta'], 10);
             $this->ftp->login($this->config['login'], $this->config['password']);
-            $this->ftp->chdir($this->config['host']);
+            $this->ftp->chdir($this->diretory);
             $this->ftp->pasv(true);
 
             return ['error' => false];
@@ -74,7 +77,7 @@ class RepositoryFtpService {
     }
 
     public function registerDirectory(string $directory): void {
-        $directorys = array_column($this->registered_cameras, 'directory');
+        $directorys = array_column($this->registered_cameras, 'diretorio');
         if (!in_array($directory, $directorys)) {
             throw new Exception('Diretorio não registrado no sistema');
         }
@@ -99,6 +102,9 @@ class RepositoryFtpService {
         }
 
         $return = $this->sendCapture($directoryCapture);
+        if (!$return) {
+            return ['error' => true];
+        }
         $data = $return->getData();
 
         if (isset($data->error)) {
@@ -107,7 +113,7 @@ class RepositoryFtpService {
             }
         }
 
-        if ($this->config['type'] == 'sftp') {
+        if ($this->config['tipo_conexao_id'] == self::TIPO_CONEXAO_SFTP) {
             $this->saveImageSftp($directoryCapture);
         } else {
             $this->saveImage($directoryCapture);
@@ -117,7 +123,7 @@ class RepositoryFtpService {
     }
 
     public function getList() {
-        if ($this->config['type'] == 'sftp') {
+        if ($this->config['tipo_conexao_id'] == self::TIPO_CONEXAO_SFTP) {
             $this->sftp->setListOrder('filename', SORT_ASC, true);
 
             return array_reverse($this->sftp->nlist());
@@ -136,7 +142,7 @@ class RepositoryFtpService {
             return false;
         }
 
-        $lastItemSent = $this->repository->lastSendCam($this->config['idCam']);
+        $lastItemSent = $this->repository->lastSendCam($this->config['cameras_id']);
 
         $list = $this->getList();
 
@@ -205,7 +211,7 @@ class RepositoryFtpService {
         } else {
             //$handle = fopen('php://temp/', 'w');
             $handle = public_path('images/');
-            $nameTmp = $pathArray[1] . '_' . $pathArray[2];
+            $nameTmp = $pathArray[1] . '_' . $pathArray[2] . '.jpg';
             if (!$this->ftp->get($handle . $nameTmp, $path, FTP_IMAGE)) {
                 Log::error('Erro ao salvar arquivo ftp');
                 return ['error' => true, 'msg' => 'erro ao salvar a imagem no repositorio'];
@@ -222,8 +228,8 @@ class RepositoryFtpService {
             "idRegister" => $idRegister,
             "captureDateTime" => Carbon::make($pathArray[0] . ' ' . $pathArray[1])->format('Y-m-d h:m:i'),
             "plate" => substr($pathArray[2], 0, 7),
-            "idEquipment" => $this->config['idEquipment'],
-            "idCam" => $this->config['idCam'],
+            "idEquipment" => $this->config['cameras_id'],
+            "idCam" => $this->config['cameras_id'],
             "image" => base64_encode($image)
         ];
     }
@@ -310,6 +316,6 @@ class RepositoryFtpService {
     }
 
     public function getDirectory() {
-        return Directory::where('status', '=', 'ativo')->get();
+        return Directory::where('situacao_registro_id', '=', 1)->get();
     }
 }

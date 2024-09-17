@@ -46,7 +46,7 @@ class ManutencaoEquipamentoService {
     }
 
     public function sendRecord() {
-        $soapClient = new SoapClientCMVService(SOAP_URL_LEITURA, SOAP_ACTION_LEITURA);
+        $soapClient = new SoapClientCMVService(SOAP_URL_LEITURA, SOAP_ACTION_LEITURA, $this->dto->CNPJOper);
         $soapClient->setXmlPostString($this->getXmlPostString());
         $retorno = $soapClient->sendCurl();
 

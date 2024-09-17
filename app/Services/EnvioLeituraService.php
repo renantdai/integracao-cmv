@@ -35,7 +35,7 @@ class EnvioLeituraService {
         $this->xmlPostString .= '<infLeitura>';
         $this->xmlPostString .= '<cUF>' . UF_CODIGO_IBGE . '</cUF>';
         $this->xmlPostString .= '<dhPass>' . $this->dto->data_captura . UTF . '</dhPass>';
-        $this->xmlPostString .= '<CNPJOper>' . CNPJ_EMPRESA . '</CNPJOper>';
+        $this->xmlPostString .= '<CNPJOper>' . $this->dto->cnpj . '</CNPJOper>';
         $this->xmlPostString .= '<cEQP>' . str_pad(strval(env('IDENTIFICADOR_MUNICIPIO') . $this->dto->cameras_id), 15, '0', STR_PAD_LEFT) . '</cEQP>'; //criar regra para validar 15 digitos
         // $this->xmlPostString .= '<latitude>' . $this->dto->latitude . '</latitude>';
         //$this->xmlPostString .= '<longitude>' . $this->dto->longitude . '</longitude>';
@@ -50,7 +50,7 @@ class EnvioLeituraService {
     }
 
     public function sendRecord() {
-        $soapClient = new SoapClientCMVService(SOAP_URL_LEITURA, SOAP_ACTION_LEITURA);
+        $soapClient = new SoapClientCMVService(SOAP_URL_LEITURA, SOAP_ACTION_LEITURA, $this->dto->cnpj);
         $soapClient->setXmlPostString($this->getXmlPostString());
         $retorno = $soapClient->sendCurl();
 

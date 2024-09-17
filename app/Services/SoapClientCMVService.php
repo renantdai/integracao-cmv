@@ -10,10 +10,12 @@ class SoapClientCMVService {
     private $xmlPostString;
     private $wsdl;
     private $soapAction;
+    private $cnpj;
 
-    public function __construct(string $wsdl, string $soapAction) {
+    public function __construct(string $wsdl, string $soapAction, string $cnpj = 'certificado') {
         $this->wsdl = $wsdl;
         $this->soapAction = $soapAction;
+        $this->cnpj = $cnpj;
     }
 
     public function getXmlPostString() {
@@ -42,7 +44,7 @@ class SoapClientCMVService {
         $xml_post_string = $this->xmlPostString;
         $header = $this->getHeader();
         $storage = Storage::disk('certificate');
-        $caFile = $storage->path('certificado.pem');
+        $caFile = $storage->path($this->cnpj.'.pem');
         //$caFile = getcwd() . "\\certificado\certificado.pem"; // Windows \\   |  linux /
         #$CA = getcwd() . "\\certificado\CACert.cer";
         #$key = getcwd() . "\\certificado\key.key";

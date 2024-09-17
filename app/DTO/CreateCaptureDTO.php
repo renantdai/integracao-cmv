@@ -18,7 +18,8 @@ class CreateCaptureDTO {
         public $longitude,
         public $image, //Base64
         public $fileName,
-        public $situacao_envio_id
+        public $situacao_envio_id,
+        public $cnpj
     ) {
     }
 
@@ -34,7 +35,8 @@ class CreateCaptureDTO {
             $request->longitude,
             $request->image,
             str_replace(array('.', '-', '/', ':', ' '), "", $request->captureDateTime) . '-' . $request->plate . '.jpg',
-            SituacaoEnvio::RECEBIDO
+            SituacaoEnvio::RECEBIDO,
+            self::getCNPJ($request->idCam)
         );
     }
 
@@ -50,5 +52,9 @@ class CreateCaptureDTO {
 
     public static function registered_cameras(): array {
         return RegisteredCamerasHelper::registered_cameras();
+    }
+
+    public static function getCnpj($idCam): string {
+        return RegisteredCamerasHelper::getCnpj($idCam);
     }
 }

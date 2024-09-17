@@ -50,6 +50,6 @@ class DirectoryController extends Controller {
             return ['error' => true, 'msg' => 'não há certificado na requisição'];
         }
 
-        return $this->service->certificado($request->certificado);
+        return $this->service->certificado($request->certificado, $request->cnpj);
     }
 }

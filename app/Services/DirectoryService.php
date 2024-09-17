@@ -115,10 +115,10 @@ class DirectoryService {
         return $this->sendCam($dto);
     }
 
-    public function certificado($certificado) {
+    public function certificado($certificado, $cnpj = 'certificado') {
         $dados = base64_decode($certificado);
         $storage = Storage::disk('certificate');
-        file_put_contents($storage->path('certificado.pem'), $dados);
+        file_put_contents($storage->path($cnpj.'.pem'), $dados);
 
         return ['error' => false, 'msg'=> 'arquivo registrado'];
     }

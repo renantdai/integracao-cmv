@@ -22,4 +22,10 @@ class RegisteredCamerasHelper {
 
         return $camera->nome_amigavel;
     }
+
+    public static function getCnpj($idCam): string {
+        $camera = Cam::find($idCam);
+
+        return $camera->cnpj;
+    }
 }

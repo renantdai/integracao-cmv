@@ -316,6 +316,6 @@ class RepositoryFtpService {
     }
 
     public function getDirectory() {
-        return Directory::where('situacao_registro_id', '=', 1)->get();
+        return Directory::where('situacao_registro_id', '=', 1)->where('tipo_conexao_id', '<>', '3')->get();
     }
 }

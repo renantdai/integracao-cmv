@@ -39,7 +39,7 @@ class CreateCamDTO extends AbstractDTO {
             isset($request->id) ? $request->id : '',
             $request->tpAmb,
             $request->verAplic,
-            CamStatus::C,
+            isset($request->tpMan) ? CamStatus::getKey($request->tpMan) : CamStatus::C,
             $request->dhReg,
             $request->CNPJOper,
             $request->cEQP,

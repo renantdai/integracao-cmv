@@ -33,4 +33,29 @@ enum CamStatus: string {
 
         throw new \ValueError("$status is not a valid from send");
     }
+
+    public static function getKey($value): CamStatus {
+        $values = [
+            'C' => 1,
+            'A' => 2,
+            'D' => 3,
+            'R' => 4
+        ];
+        foreach ($values as $chave => $valor) {
+            if ($valor === $value) {
+                switch ($chave) {
+                    case 'C':
+                        return self::C;
+                    case 'A':
+                        return self::A;
+                    case 'D':
+                        return self::D;
+                    case 'R':
+                        return self::R;
+                }
+            }
+        }
+
+        throw new \ValueError("$value is not a value valid");
+    }
 }

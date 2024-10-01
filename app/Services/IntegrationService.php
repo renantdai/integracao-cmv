@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTO\CreateCaptureDTO;
+use App\Models\Cam;
 use App\Models\SituacaoEnvio;
 use App\Repositories\Contracts\IntegrationRepositoryInterface;
 use App\Services\EnvioLeituraService;
@@ -37,6 +38,8 @@ class IntegrationService {
     }
 
     public function envioLeituraService(CreateCaptureDTO $dto): bool {
+        $idCam = Cam::find($dto->cameras_id);
+        $dto->cameras_id = $idCam->identificador_equipamento; //regra na qual a camera envia ID banco, e tem que achar o registro no cmv
         $envioLeituraService = new EnvioLeituraService($dto);
         $envioLeituraService->setXmlPostString();
 
